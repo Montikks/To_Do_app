@@ -1,4 +1,9 @@
-from django.http import HttpResponse
+from django.shortcuts import  render
+from models import Task
 
-def index(request):
-    return HttpResponse("Welcome to the To-Do app!")
+
+def task_list(request):
+    tasks = Task.objects.all()
+    return render(request, 'tasks/list.html', {'tasks': tasks})
+
+
