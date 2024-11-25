@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail úkolu</title>
+</head>
+<body>
+    <h1>Detail úkolu</h1>
+    <p><strong>Název:</strong> {{ task.title }}</p>
+    <p><strong>Popis:</strong> {{ task.description }}</p>
+    <a href="{% url 'task_list' %}">Zpět na seznam úkolů</a>
+</body>
+</html>
