@@ -7,8 +7,12 @@
     <h1>Seznam úkolů</h1>
     <ul>
         {% for task in tasks %}
-            <li>{{ task.name }}</li>
+            <li>
+                <a href="{% url 'task_detail' task.id %}">
+                    {{ task.title }}</a>
+            </li>
         {% endfor %}
     </ul>
+    <a href="{% url 'add_task' %}">Přidat úkol</a>
 </body>
 </html>
