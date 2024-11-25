@@ -8,11 +8,18 @@
     <ul>
         {% for task in tasks %}
             <li>
-                <a href="{% url 'task_detail' task.id %}">
-                    {{ task.title }}</a>
+                <a href="{% url 'task_detail' task.id %}">{{ task.name }}</a>
+                {% if not task.completed %}
+                    <form method="post" action="{% url 'complete_task' task.id %}">
+                        {% csrf_token %}
+                        <button type="submit">Označit jako dokončené</button>
+                    </form>
+                {% else %}
+                    <span>Dokončeno</span>
+                {% endif %}
             </li>
         {% endfor %}
     </ul>
-    <a href="{% url 'add_task' %}">Přidat úkol</a>
+    <a href="{% url 'add_task' %}">Přidat nový úkol</a>
 </body>
 </html>
