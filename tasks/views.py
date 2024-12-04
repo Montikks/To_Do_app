@@ -34,3 +34,10 @@ def add_task(request):
     else:
         form = TaskForm()
     return render(request, 'tasks/add_task.html', {'form': form})
+
+def complete_tasks(request):
+    tasks = Task.objects.filter(completed=True)
+    return render(request, 'tasks/completed_tasks.html', {'tasks': tasks})
+def pending_tasks(request):
+    tasks = Task.objects.filter(completed=False)
+    return render(request, 'tasks/pending_tasks.html', {'tasks': tasks})
