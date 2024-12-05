@@ -1,20 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detail úkolu</title>
-</head>
-<body>
-    <h1>Detail úkolu</h1>
-    <p><strong>Název:</strong> {{ task.name }}</p>
-    <p><strong>Popis:</strong> {{ task.description }}</p>
-    <p><strong>Hotový:</strong> {{ task.completed|yesno:"Ano,Ne" }}</p>
+{% extends 'tasks/base.html' %}
 
-    <!-- Tlačítko pro návrat na seznam -->
-    <a href="{% url 'task_list' %}">Zpět na seznam úkolů</a>
+{% block title %}Detail úkolu{% endblock %}
 
-    <!-- Tlačítko pro smazání -->
-    <a href="{% url 'delete_task' task.id %}" onclick="return confirm('Opravdu chcete smazat tento úkol?');">Smazat úkol</a>
-</body>
-</html>
+{% block content %}
+<h2>Detail úkolu</h2>
+<p><strong>Název:</strong> {{ task.name }}</p>
+<p><strong>Popis:</strong> {{ task.description }}</p>
+<p><strong>Hotový:</strong> {{ task.completed|yesno:"Ano,Ne" }}</p>
+<a href="{% url 'task_list' %}">Zpět na seznam úkolů</a>
+<a href="{% url 'delete_task' task.id %}" onclick="return confirm('Opravdu chcete smazat tento úkol?');">Smazat úkol</a>
+{% endblock %}

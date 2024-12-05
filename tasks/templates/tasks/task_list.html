@@ -1,27 +1,27 @@
-<!DOCTYPE html>
-<html>
-<head>
-    {% load static %}
-    <title>Task List</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'tasks/css/styles.css' %}">
-</head>
-<body>
-    <h1>Seznam úkolů</h1>
-    <ul>
-        {% for task in tasks %}
-            <li>
-                <a href="{% url 'task_detail' task.id %}">{{ task.name }}</a>
-                {% if not task.completed %}
-                    <form method="post" action="{% url 'complete_task' task.id %}">
-                        {% csrf_token %}
-                        <button type="submit">Označit jako dokončené</button>
-                    </form>
-                {% else %}
-                    <span>Dokončeno</span>
-                {% endif %}
-            </li>
-        {% endfor %}
-    </ul>
-    <a href="{% url 'add_task' %}">Přidat nový úkol</a>
-</body>
-</html>
+{% extends 'tasks/base.html' %}
+
+{% block title %}Seznam úkolů{% endblock %}
+
+{% block content %}
+<div class="task-list-container">
+    <h2>Seznam úkolů</h2>
+    {% if tasks %}
+        <ul class="task-list">
+            {% for task in tasks %}
+                <li class="{% if task.completed %}completed-task{% else %}pending-task{% endif %}">
+                    <span class="task-name">
+                        <a href="{% url 'task_detail' task.id %}">{{ task.name }}</a>
+                    </span>
+                    {% if not task.completed %}
+                        <a href="{% url 'complete_task' task.id %}" class="button complete">Dokončit</a>
+                    {% endif %}
+                    <a href="{% url 'delete_task' task.id %}" class="button delete">Smazat</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Žádné úkoly nejsou aktuálně vytvořené.</p>
+    {% endif %}
+    <a href="{% url 'add_task' %}" class="button neutral">Přidat nový úkol</a>
+</div>
+{% endblock %}

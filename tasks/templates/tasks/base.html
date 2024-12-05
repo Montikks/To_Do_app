@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <title>{% block title %}To-Do Aplikace{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'tasks/css/styles.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+</head>
+<body>
+    <header>
+        <h1><a href="{% url 'task_list' %}">To-Do Aplikace</a></h1>
+    </header>
+    <main>
+        <div class="container">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </main>
+    <footer>
+        <p>© 2024 To-Do-App</p>
+    </footer>
+</body>
+</html>

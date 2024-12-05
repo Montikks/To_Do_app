@@ -1,17 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Přidat úkol</title>
-</head>
-<body>
-    <h1>Přidat nový úkol</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Přidat</button>
-    </form>
-    <a href="{% url 'task_list' %}">Zpět na seznam úkolů</a>
-</body>
-</html>
+{% extends 'tasks/base.html' %}
+
+{% block title %}Přidat nový úkol{% endblock %}
+
+{% block content %}
+<h2>Přidat nový úkol</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Přidat</button>
+</form>
+<a href="{% url 'task_list' %}">Zpět na seznam úkolů</a>
+{% endblock %}

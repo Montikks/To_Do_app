@@ -1,22 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dokončené úkoly</title>
-</head>
-<body>
-    <h1>Dokončené úkoly</h1>
-    <ul>
-        {% for task in tasks %}
-            <li>
-                <a href="{% url 'task_detail' task.id %}">{{ task.name }}</a>
-                <a href="{% url 'delete_task' task.id %}">Smazat</a>
-            </li>
-        {% empty %}
-            <p>Žádné dokončené úkoly.</p>
-        {% endfor %}
-    </ul>
-    <a href="{% url 'task_list' %}">Zpět na seznam úkolů</a>
-</body>
-</html>
+{% extends 'tasks/base.html' %}
+
+{% block title %}Dokončené úkoly{% endblock %}
+
+{% block content %}
+<h2>Dokončené úkoly</h2>
+<ul>
+    {% for task in tasks %}
+        <li>
+            <a href="{% url 'task_detail' task.id %}">{{ task.name }}</a>
+        </li>
+    {% empty %}
+        <p>Žádné dokončené úkoly.</p>
+    {% endfor %}
+</ul>
+<a href="{% url 'task_list' %}">Zpět na seznam úkolů</a>
+{% endblock %}
