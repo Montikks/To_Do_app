@@ -7,3 +7,19 @@ class Task(models.Model):
 
     def __str__(self):
         return self.name
+
+    def completion_percentage(self):
+        total = self.subtasks.count()
+        if total == 0:
+            # Pokud nemáme podúkoly, úkol je buď 0% nebo 100% podle toho, zda je jako celek splněný
+            return 100 if self.completed else 0
+        done = self.subtasks.filter(completed=True).count()
+        return int((done / total) * 100)
+
+class Subtask(models.Model):
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='subtasks')
+    name = models.CharField(max_length=255)
+    completed = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.name} (Subtask of {self.task.name})"

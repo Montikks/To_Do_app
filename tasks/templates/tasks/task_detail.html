@@ -7,6 +7,28 @@
 <p><strong>Název:</strong> {{ task.name }}</p>
 <p><strong>Popis:</strong> {{ task.description }}</p>
 <p><strong>Hotový:</strong> {{ task.completed|yesno:"Ano,Ne" }}</p>
-<a href="{% url 'task_list' %}">Zpět na seznam úkolů</a>
-<a href="{% url 'delete_task' task.id %}" onclick="return confirm('Opravdu chcete smazat tento úkol?');">Smazat úkol</a>
+<p><strong>Procento dokončení:</strong> {{ task.completion_percentage }}%</p>
+
+<h3>Podúkoly</h3>
+<ul>
+  {% for subtask in subtasks %}
+    <li>
+      {{ subtask.name }} -
+      {% if subtask.completed %}
+        Splněn
+      {% else %}
+        Nesplněn | <a href="{% url 'complete_subtask' task.id subtask.id %}">Označit jako splněný</a>
+      {% endif %}
+    </li>
+  {% empty %}
+    <li>Žádné podúkoly.</li>
+  {% endfor %}
+</ul>
+
+<p><a href="{% url 'add_subtask' task.id %}">Přidat podúkol</a></p>
+
+<p>
+  <a href="{% url 'task_list' %}">Zpět na seznam úkolů</a> |
+  <a href="{% url 'delete_task' task.id %}" onclick="return confirm('Opravdu chcete smazat tento úkol?');">Smazat úkol</a>
+</p>
 {% endblock %}
