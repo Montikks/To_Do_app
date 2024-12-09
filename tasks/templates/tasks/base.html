@@ -12,6 +12,15 @@
 <body>
     <header>
         <h1><a href="{% url 'task_list' %}">To-Do Aplikace</a></h1>
+        <nav>
+            <p>
+            {% if user.is_authenticated %}
+                Přihlašen jako: {{ user.username }} (<a href="{% url 'logout' %}">Odhlásit</a>)
+            {% else %}
+                <a href="{% url 'login' %}">Přihlásit</a> | <a href="{% url 'register' %}">Registrovat</a>
+            {% endif %}
+            </p>
+        </nav>
     </header>
     <main>
         <div class="container">

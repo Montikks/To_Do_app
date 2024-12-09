@@ -1,5 +1,5 @@
 from django.urls import path
-from . import views
+from . import views, auth_views
 
 urlpatterns = [
     path('', views.task_list, name='task_list'),
@@ -11,4 +11,10 @@ urlpatterns = [
     path('pending_tasks/', views.pending_tasks, name='pending_tasks'),
     path('task/<int:task_id>/add_subtask/', views.add_subtask, name='add_subtask'),
     path('task/<int:task_id>/subtask/<int:subtask_id>/complete/', views.complete_subtask, name='complete_subtask'),
+
+
+    # Auth
+    path('login/', auth_views.login_view, name='login'),
+    path('logout/', auth_views.logout_view, name='logout'),
+    path('register/', auth_views.register_view, name='register'),
 ]
