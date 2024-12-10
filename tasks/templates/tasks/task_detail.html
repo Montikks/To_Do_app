@@ -8,6 +8,9 @@
 <p><strong>Popis:</strong> {{ task.description }}</p>
 <p><strong>Hotový:</strong> {{ task.completed|yesno:"Ano,Ne" }}</p>
 <p><strong>Procento dokončení:</strong> {{ task.completion_percentage }}%</p>
+{% if not task.completed and task.completion_percentage == 100 %}
+    <a href="{% url 'complete_task' task.id %}" class="button complete">Dokončit úkol</a>
+{% endif %}
 
 <h3>Podúkoly</h3>
 <ul>

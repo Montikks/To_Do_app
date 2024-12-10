@@ -13,7 +13,10 @@
                         <a href="{% url 'task_detail' task.id %}">{{ task.name }}</a>
                     </span>
                     {% if not task.completed %}
-                        <a href="{% url 'complete_task' task.id %}" class="button complete">Dokončit</a>
+                        <span>{{ task.completion_percentage }}%</span>
+                        {% if task.completion_percentage == 100 %}
+                            <a href="{% url 'complete_task' task.id %}" class="button complete">Dokončit</a>
+                        {% endif %}
                     {% endif %}
                     <a href="{% url 'delete_task' task.id %}" class="button delete">Smazat</a>
                 </li>

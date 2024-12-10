@@ -3,11 +3,13 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from .models import Task, Subtask
 
+
 class TasksTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='testuser', password='password')
         self.client.login(username='testuser', password='password')
         self.task = Task.objects.create(user=self.user, name="Test Task")
+
 
 class TaskModelsTestCase(TestCase):
     def setUp(self):
@@ -24,6 +26,7 @@ class TaskModelsTestCase(TestCase):
         self.assertEqual(self.task.description, "Popis testovacího úkolu")
         self.assertFalse(self.task.completed)
 
+
 class TaskListViewTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='testuser', password='password')
@@ -34,6 +37,7 @@ class TaskListViewTestCase(TestCase):
         response = self.client.get(reverse("task_list"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "ukol 1")
+
 
 class TaskViewTestCase(TestCase):
     def setUp(self):
@@ -49,6 +53,7 @@ class TaskViewTestCase(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(Task.objects.last().name, "ukol 1")
 
+
 class AuthTests(TestCase):
     def setUp(self):
         self.client = Client()
@@ -62,6 +67,7 @@ class AuthTests(TestCase):
         self.client.login(username='testuser', password='password')
         response = self.client.get(reverse("logout"))
         self.assertEqual(response.status_code, 302)
+
 
 class SubTaskTests(TestCase):
     def setUp(self):
