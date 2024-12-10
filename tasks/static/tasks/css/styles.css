@@ -221,3 +221,26 @@ footer {
     color: #6c757d;
     font-size: 14px;
 }
+
+
+.subtask-list {
+    display: none;
+    background-color: #f9f9f9;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    position: absolute;
+    z-index: 100;
+    width: 300px; /* Nastavte šířku dle potřeby */
+    top: 50px; /* Posun dolů od hlavního úkolu */
+    left: 10px; /* Posun doprava od hlavního úkolu */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Přidání stínu pro lepší vizuální oddělení */
+}
+
+.task-list li {
+    position: relative; /* Důležité pro správné umístění podúkolů */
+}
+
+.task-list li:hover .subtask-list {
+    display: block;
+}

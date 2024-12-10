@@ -78,3 +78,16 @@ def complete_subtask(request, task_id, subtask_id):
     subtask.completed = True
     subtask.save()
     return redirect('task_detail', task_id=task_id)
+
+
+@login_required
+def edit_subtask(request, task_id, subtask_id):
+    subtask = get_object_or_404(Subtask, id=subtask_id, task_id=task_id)
+    if request.method == 'POST':
+        form = SubtaskForm(request.POST, instance=subtask)
+        if form.is_valid():
+            form.save()
+            return redirect('task_detail', task_id=task_id)
+    else:
+        form = SubtaskForm(instance=subtask)
+    return render(request, 'tasks/edit_subtask.html', {'form': form, 'task': subtask.task})

@@ -12,13 +12,33 @@
                     <span class="task-name">
                         <a href="{% url 'task_detail' task.id %}">{{ task.name }}</a>
                     </span>
+
+                    <!-- Procento dokončení úkolu -->
                     {% if not task.completed %}
                         <span>{{ task.completion_percentage }}%</span>
-                        {% if task.completion_percentage == 100 %}
+                        {% if task.completion_percentage == 100 or task.subtasks.count == 0 %}
                             <a href="{% url 'complete_task' task.id %}" class="button complete">Dokončit</a>
                         {% endif %}
                     {% endif %}
+
+                    <!-- Tlačítko Smazat -->
                     <a href="{% url 'delete_task' task.id %}" class="button delete">Smazat</a>
+
+                    <!-- Seznam podúkolů na hover efekt -->
+                    {% if task.subtasks.all %}
+                        <ul class="subtask-list">
+                            {% for subtask in task.subtasks.all %}
+                                <li>
+                                    {{ subtask.name }}
+                                    {% if not subtask.completed %}
+                                        | <a href="{% url 'edit_subtask' task.id subtask.id %}">Upravit</a>
+                                    {% else %}
+                                        - Splněno
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
                 </li>
             {% endfor %}
         </ul>
