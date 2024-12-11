@@ -14,7 +14,6 @@ urlpatterns = [
     path('task/<int:task_id>/subtask/<int:subtask_id>/edit/', views.edit_subtask, name='edit_subtask'),
 
 
-
     # Auth
     path('login/', auth_views.login_view, name='login'),
     path('logout/', auth_views.logout_view, name='logout'),
