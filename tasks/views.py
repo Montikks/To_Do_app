@@ -6,8 +6,14 @@ from django.contrib.auth.decorators import login_required
 
 @login_required
 def task_list(request):
-    tasks = Task.objects.filter(user=request.user)
-    return render(request, 'tasks/task_list.html', {'tasks': tasks})
+    filter_status = request.GET.get('status')  # Získání filtru z URL
+    if filter_status == 'completed':
+        tasks = Task.objects.filter(user=request.user, completed=True)
+    elif filter_status == 'pending':
+        tasks = Task.objects.filter(user=request.user, completed=False)
+    else:
+        tasks = Task.objects.filter(user=request.user)
+    return render(request, 'tasks/task_list.html', {'tasks': tasks, 'filter_status': filter_status})
 
 
 

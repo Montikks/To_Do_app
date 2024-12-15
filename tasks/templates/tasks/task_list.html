@@ -5,6 +5,16 @@
 {% block content %}
 <div class="task-list-container">
     <h2>Seznam úkolů</h2>
+    <div class="filter-container">
+    <form method="get" action="{% url 'task_list' %}">
+        <label for="status">Filtr:</label>
+        <select name="status" id="status" onchange="this.form.submit()">
+            <option value="" {% if not filter_status %}selected{% endif %}>Všechny</option>
+            <option value="completed" {% if filter_status == 'completed' %}selected{% endif %}>Dokončené</option>
+            <option value="pending" {% if filter_status == 'pending' %}selected{% endif %}>Nedokončené</option>
+        </select>
+    </form>
+</div>
     {% if tasks %}
         <ul class="task-list">
             {% for task in tasks %}
