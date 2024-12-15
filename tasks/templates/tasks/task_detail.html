@@ -17,12 +17,13 @@
 <ul>
   {% for subtask in subtasks %}
     <li>
-      {{ subtask.name }} -
-      {% if subtask.completed %}
-        Splněn
+      {{ subtask.name }}
+      {% if not subtask.completed %}
+        | <a href="{% url 'complete_subtask' task.id subtask.id %}" class="button complete">Označit jako splněný</a>
       {% else %}
-        Nesplněn | <a href="{% url 'complete_subtask' task.id subtask.id %}">Označit jako splněný</a>
+        - Splněno
       {% endif %}
+      | <a href="{% url 'delete_subtask' task.id subtask.id %}" class="button delete" onclick="return confirm('Opravdu chcete smazat tento podúkol?');">Smazat</a>
     </li>
   {% empty %}
     <li>Žádné podúkoly.</li>

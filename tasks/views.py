@@ -97,3 +97,10 @@ def edit_subtask(request, task_id, subtask_id):
     else:
         form = SubtaskForm(instance=subtask)
     return render(request, 'tasks/edit_subtask.html', {'form': form, 'task': subtask.task})
+
+
+@login_required
+def delete_subtask(request, task_id, subtask_id):
+    subtask = get_object_or_404(Subtask, id=subtask_id, task_id=task_id)
+    subtask.delete()
+    return redirect('task_detail', task_id=task_id)
