@@ -3,33 +3,61 @@ from .models import Task, Subtask
 from .forms import TaskForm, SubtaskForm
 from django.contrib.auth.decorators import login_required
 from datetime import date
-
+from django.utils import timezone
+from django.db.models import Q
 
 @login_required
 def task_list(request):
+    # Získání filtrů a parametrů z URL
     filter_status = request.GET.get('status', '')
     filter_deadline = request.GET.get('deadline', '')
+    sort_option = request.GET.get('sort', '')
+    search_query = request.GET.get('search', '')
 
+    # Filtrování úkolů podle uživatele
     tasks = Task.objects.filter(user=request.user)
 
+    # Filtrování podle stavu
     if filter_status == 'completed':
         tasks = tasks.filter(completed=True)
     elif filter_status == 'pending':
         tasks = tasks.filter(completed=False)
 
+    # Filtrování podle termínu
     if filter_deadline == 'today':
-        tasks = tasks.filter(deadline=date.today())
+        tasks = tasks.filter(deadline=timezone.now().date())
     elif filter_deadline == 'upcoming':
-        tasks = tasks.filter(deadline__gt=date.today())
+        tasks = tasks.filter(deadline__gt=timezone.now().date())
     elif filter_deadline == 'overdue':
-        tasks = tasks.filter(deadline__lt=date.today(), completed=False)
+        tasks = tasks.filter(deadline__lt=timezone.now().date(), completed=False)
 
+    # Vyhledávání
+    if search_query:
+        tasks = tasks.filter(
+            Q(name__icontains=search_query) |
+            Q(description__icontains=search_query)
+        )
+
+    # Třídění
+    if sort_option == 'deadline_asc':
+        tasks = tasks.order_by('deadline')
+    elif sort_option == 'deadline_desc':
+        tasks = tasks.order_by('-deadline')
+    elif sort_option == 'status':
+        tasks = tasks.order_by('completed', 'deadline')
+    elif sort_option == 'completion_asc':
+        tasks = sorted(tasks, key=lambda t: t.completion_percentage())
+    elif sort_option == 'completion_desc':
+        tasks = sorted(tasks, key=lambda t: t.completion_percentage(), reverse=True)
+
+    # Vrácení šablony s parametry
     return render(request, 'tasks/task_list.html', {
         'tasks': tasks,
         'filter_status': filter_status,
         'filter_deadline': filter_deadline,
+        'sort_option': sort_option,
+        'search_query': search_query,
     })
-
 
 
 

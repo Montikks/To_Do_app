@@ -6,7 +6,7 @@
 <div class="task-list-container">
     <h2>Seznam úkolů</h2>
 
-    <!-- Filtry -->
+     <!-- Filtry a vyhledávání -->
     <div class="filter-container">
         <form method="get" action="{% url 'task_list' %}">
             <label for="status">Filtr stav:</label>
@@ -23,6 +23,18 @@
                 <option value="upcoming" {% if filter_deadline == 'upcoming' %}selected{% endif %}>Připravované</option>
                 <option value="overdue" {% if filter_deadline == 'overdue' %}selected{% endif %}>Po termínu</option>
             </select>
+
+            <label for="sort">Řazení:</label>
+            <select name="sort" id="sort" onchange="this.form.submit()">
+                <option value="" {% if not sort_option %}selected{% endif %}>Výchozí</option>
+                <option value="deadline_asc" {% if sort_option == 'deadline_asc' %}selected{% endif %}>Termín vzestupně</option>
+                <option value="deadline_desc" {% if sort_option == 'deadline_desc' %}selected{% endif %}>Termín sestupně</option>
+                <option value="completion" {% if sort_option == 'completion' %}selected{% endif %}>Procento dokončení</option>
+            </select>
+
+            <label for="search">Hledat podle názvu, popisu nebo podúkolu:</label>
+            <input type="text" name="search" id="search" value="{{ search_query }}" placeholder="Hledat...">
+            <button type="submit" class="button neutral">Hledat</button>
         </form>
     </div>
 
@@ -76,12 +88,5 @@
 
     <!-- Tlačítko pro přidání úkolu -->
     <a href="{% url 'add_task' %}" class="button neutral">Přidat nový úkol</a>
-
-{% if task.id %}
-    <a href="{% url 'edit_task' task.id %}">Upravit</a>
-{% endif %}
-
-
-
 </div>
 {% endblock %}
