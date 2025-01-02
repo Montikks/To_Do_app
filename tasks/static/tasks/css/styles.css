@@ -239,6 +239,42 @@ footer {
 
 .task-list li {
     position: relative; /* Důležité pro správné umístění podúkolů */
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.task-name {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.task-deadline {
+    font-size: 14px;
+    color: #555;
+}
+
+.task-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.task-progress {
+    font-size: 14px;
+    color: #007bff;
+    margin-right: 10px;
 }
 
 .task-list li:hover .subtask-list {

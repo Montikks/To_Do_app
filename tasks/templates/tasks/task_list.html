@@ -5,36 +5,54 @@
 {% block content %}
 <div class="task-list-container">
     <h2>Seznam úkolů</h2>
+
+    <!-- Filtry -->
     <div class="filter-container">
-    <form method="get" action="{% url 'task_list' %}">
-        <label for="status">Filtr:</label>
-        <select name="status" id="status" onchange="this.form.submit()">
-            <option value="" {% if not filter_status %}selected{% endif %}>Všechny</option>
-            <option value="completed" {% if filter_status == 'completed' %}selected{% endif %}>Dokončené</option>
-            <option value="pending" {% if filter_status == 'pending' %}selected{% endif %}>Nedokončené</option>
-        </select>
-    </form>
-</div>
+        <form method="get" action="{% url 'task_list' %}">
+            <label for="status">Filtr stav:</label>
+            <select name="status" id="status" onchange="this.form.submit()">
+                <option value="" {% if not filter_status %}selected{% endif %}>Všechny</option>
+                <option value="completed" {% if filter_status == 'completed' %}selected{% endif %}>Dokončené</option>
+                <option value="pending" {% if filter_status == 'pending' %}selected{% endif %}>Nedokončené</option>
+            </select>
+
+            <label for="deadline">Filtr termín:</label>
+            <select name="deadline" id="deadline" onchange="this.form.submit()">
+                <option value="" {% if not filter_deadline %}selected{% endif %}>Všechny</option>
+                <option value="today" {% if filter_deadline == 'today' %}selected{% endif %}>Dnes</option>
+                <option value="upcoming" {% if filter_deadline == 'upcoming' %}selected{% endif %}>Připravované</option>
+                <option value="overdue" {% if filter_deadline == 'overdue' %}selected{% endif %}>Po termínu</option>
+            </select>
+        </form>
+    </div>
+
+    <!-- Seznam úkolů -->
     {% if tasks %}
         <ul class="task-list">
             {% for task in tasks %}
                 <li class="{% if task.completed %}completed-task{% else %}pending-task{% endif %}">
-                    <span class="task-name">
-                        <a href="{% url 'task_detail' task.id %}">{{ task.name }}</a>
-                    </span>
-
-                    <!-- Procento dokončení úkolu -->
-                    {% if not task.completed %}
-                        <span>{{ task.completion_percentage }}%</span>
-                        {% if task.completion_percentage == 100 or task.subtasks.count == 0 %}
-                            <a href="{% url 'complete_task' task.id %}" class="button complete">Dokončit</a>
+                    <!-- Název a termín -->
+                    <div class="task-header">
+                        <span class="task-name">
+                            <a href="{% url 'task_detail' task.id %}">{{ task.name }}</a>
+                        </span>
+                        {% if task.deadline %}
+                            <span class="task-deadline">Termín: {{ task.deadline|date:"d. M. Y, H:i" }}</span>
                         {% endif %}
-                    {% endif %}
+                    </div>
 
-                    <!-- Tlačítko Smazat -->
-                    <a href="{% url 'delete_task' task.id %}" class="button delete">Smazat</a>
+                    <!-- Procento dokončení a tlačítka -->
+                    <div class="task-actions">
+                        {% if not task.completed %}
+                            <span>{{ task.completion_percentage }}%</span>
+                            {% if task.completion_percentage == 100 or task.subtasks.count == 0 %}
+                                <a href="{% url 'complete_task' task.id %}" class="button complete">Dokončit</a>
+                            {% endif %}
+                        {% endif %}
+                        <a href="{% url 'delete_task' task.id %}" class="button delete">Smazat</a>
+                    </div>
 
-                    <!-- Seznam podúkolů na hover efekt -->
+                    <!-- Podúkoly -->
                     {% if task.subtasks.all %}
                         <ul class="subtask-list">
                             {% for subtask in task.subtasks.all %}
@@ -55,6 +73,15 @@
     {% else %}
         <p>Žádné úkoly nejsou aktuálně vytvořené.</p>
     {% endif %}
+
+    <!-- Tlačítko pro přidání úkolu -->
     <a href="{% url 'add_task' %}" class="button neutral">Přidat nový úkol</a>
+
+{% if task.id %}
+    <a href="{% url 'edit_task' task.id %}">Upravit</a>
+{% endif %}
+
+
+
 </div>
 {% endblock %}

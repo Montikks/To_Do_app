@@ -2,18 +2,33 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Task, Subtask
 from .forms import TaskForm, SubtaskForm
 from django.contrib.auth.decorators import login_required
+from datetime import date
 
 
 @login_required
 def task_list(request):
-    filter_status = request.GET.get('status')  # Získání filtru z URL
+    filter_status = request.GET.get('status', '')
+    filter_deadline = request.GET.get('deadline', '')
+
+    tasks = Task.objects.filter(user=request.user)
+
     if filter_status == 'completed':
-        tasks = Task.objects.filter(user=request.user, completed=True)
+        tasks = tasks.filter(completed=True)
     elif filter_status == 'pending':
-        tasks = Task.objects.filter(user=request.user, completed=False)
-    else:
-        tasks = Task.objects.filter(user=request.user)
-    return render(request, 'tasks/task_list.html', {'tasks': tasks, 'filter_status': filter_status})
+        tasks = tasks.filter(completed=False)
+
+    if filter_deadline == 'today':
+        tasks = tasks.filter(deadline=date.today())
+    elif filter_deadline == 'upcoming':
+        tasks = tasks.filter(deadline__gt=date.today())
+    elif filter_deadline == 'overdue':
+        tasks = tasks.filter(deadline__lt=date.today(), completed=False)
+
+    return render(request, 'tasks/task_list.html', {
+        'tasks': tasks,
+        'filter_status': filter_status,
+        'filter_deadline': filter_deadline,
+    })
 
 
 
@@ -104,3 +119,16 @@ def delete_subtask(request, task_id, subtask_id):
     subtask = get_object_or_404(Subtask, id=subtask_id, task_id=task_id)
     subtask.delete()
     return redirect('task_detail', task_id=task_id)
+
+
+@login_required
+def edit_task(request, task_id):
+    task = get_object_or_404(Task, id=task_id, user=request.user)
+    if request.method == 'POST':
+        form = TaskForm(request.POST, instance=task)
+        if form.is_valid():
+            form.save()
+            return redirect('task_list')
+    else:
+        form = TaskForm(instance=task)
+    return render(request, 'tasks/edit_task.html', {'form': form, 'task': task})

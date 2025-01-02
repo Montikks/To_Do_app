@@ -1,13 +1,13 @@
 {% extends 'tasks/base.html' %}
 
-{% block title %}Přidat nový úkol{% endblock %}
+{% block title %}Upravit úkol{% endblock %}
 
 {% block content %}
-<h2>Přidat nový úkol</h2>
+<h2>Upravit úkol</h2>
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit" class="button neutral">Přidat úkol</button>
+    <button type="submit" class="button neutral">Uložit změny</button>
 </form>
 <a href="{% url 'task_list' %}">Zpět na seznam úkolů</a>
 {% endblock %}

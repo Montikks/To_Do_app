@@ -30,6 +30,9 @@
   {% endfor %}
 </ul>
 
+<p><strong>Termín splnění:</strong> {{ task.deadline|date:"d. m. Y" }}</p>
+
+
 <p><a href="{% url 'add_subtask' task.id %}">Přidat podúkol</a></p>
 
 <p>
