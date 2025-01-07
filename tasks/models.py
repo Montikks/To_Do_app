@@ -33,6 +33,16 @@ class Task(models.Model):
         notification_threshold = self.deadline - timedelta(hours=self.notification_time)
         return notification_threshold <= current_time <= self.deadline
 
+    def get_time_until_deadline(self):
+        if not self.deadline:
+            return None
+        time_diff = self.deadline - now()
+        if time_diff.total_seconds() > 0:
+            hours, remainder = divmod(time_diff.total_seconds(), 3600)
+            minutes, _ = divmod(remainder, 60)
+            return int(hours), int(minutes)
+        return None  # Pokud je termín již prošlý
+
     def __str__(self):
         return self.name
 

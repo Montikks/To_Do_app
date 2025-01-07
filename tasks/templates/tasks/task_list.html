@@ -71,42 +71,55 @@
     <a href="{% url 'add_task' %}" class="button neutral">Přidat nový úkol</a>
 </div>
 
-<!-- Modalní okno -->
+<!-- Modalní okno pro notifikace -->
 <div id="notificationModal" class="modal" style="display: none;">
     <div class="modal-content">
         <span class="close-button">&times;</span>
         <h3>Upozornění</h3>
-        <ul id="notification-list">
-            <!-- JavaScript naplní seznam -->
+        <ul>
+            <!-- Notifikace na blížící se termíny -->
+            <li><strong>Blížící se termíny:</strong></li>
+            {% for item in upcoming_notifications %}
+            <li>
+                Úkol: <strong>{{ item.task.name }}</strong> zbývá:
+                {{ item.hours }} hodin a {{ item.minutes }} minut
+                ({{ item.task.deadline|date:"d.m.Y H:i" }}).
+            </li>
+            {% endfor %}
+
+            <!-- Notifikace na úkoly po termínu -->
+            <li><strong>Úkoly po termínu:</strong></li>
+            {% for task in overdue_notifications %}
+            <li>
+                Úkol: <strong>{{ task.name }}</strong> je po termínu!
+                (Termín byl: {{ task.deadline|date:"d.m.Y H:i" }}).
+            </li>
+            {% endfor %}
         </ul>
     </div>
 </div>
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-    const modal = document.getElementById('notificationModal');
-    const closeButton = document.querySelector('.close-button');
-    const notificationList = document.getElementById('notification-list');
+        const modal = document.getElementById('notificationModal');
+        const closeButton = document.querySelector('.close-button');
 
-    {% if notifications %}
-        {% for task in notifications %}
-        const li = document.createElement('li');
-        li.textContent = `Úkol: {{ task.name }} - Termín: {{ task.deadline|date:"d.m.Y H:i" }}`;
-        notificationList.appendChild(li);
-        {% endfor %}
+        // Zobrazení modálního okna, pokud jsou notifikace
+        {% if upcoming_notifications or overdue_notifications %}
         modal.style.display = 'block';
-    {% endif %}
+        {% endif %}
 
-    closeButton.addEventListener('click', () => {
-        modal.style.display = 'none';
-    });
-
-    window.addEventListener('click', event => {
-        if (event.target === modal) {
+        // Zavírá modální okno
+        closeButton.addEventListener('click', () => {
             modal.style.display = 'none';
-        }
-    });
-});
+        });
 
+        window.addEventListener('click', event => {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    });
 </script>
 
 {% endblock %}

@@ -50,8 +50,20 @@ def task_list(request):
             Q(subtasks__name__icontains=search_query)
         ).distinct()
 
-    # Logika pro notifikace
-    notifications = [task for task in tasks if task.is_notification_due()]
+    # Logika pro rozdělení notifikací
+    upcoming_notifications = []
+    for task in tasks:
+        if task.is_notification_due():
+            time_diff = task.deadline - timezone.now()
+            hours, remainder = divmod(time_diff.total_seconds(), 3600)
+            minutes, _ = divmod(remainder, 60)
+            upcoming_notifications.append({
+                'task': task,
+                'hours': int(hours),
+                'minutes': int(minutes)
+            })
+
+    overdue_notifications = tasks.filter(deadline__lt=timezone.now(), completed=False)
 
     return render(request, 'tasks/task_list.html', {
         'tasks': tasks,
@@ -59,7 +71,8 @@ def task_list(request):
         'filter_deadline': filter_deadline,
         'sort_option': sort_option,
         'search_query': search_query,
-        'notifications': notifications,
+        'upcoming_notifications': upcoming_notifications,
+        'overdue_notifications': overdue_notifications,
     })
 
 
