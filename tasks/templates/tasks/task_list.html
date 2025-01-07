@@ -49,7 +49,7 @@
                             <a href="{% url 'task_detail' task.id %}">{{ task.name }}</a>
                         </span>
                         {% if task.deadline %}
-                            <span class="task-deadline">Termín: {{ task.deadline|date:"d. M. Y, H:i" }}</span>
+                            <span class="task-deadline">Termín: {{ task.deadline|date:"d.m.Y H:i" }}</span>
                         {% endif %}
                     </div>
                     <div class="task-actions">
