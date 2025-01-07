@@ -4,14 +4,16 @@
 
 {% block content %}
 <h2>Dokončené úkoly</h2>
-<ul>
-    {% for task in tasks %}
-        <li>
-            <a href="{% url 'task_detail' task.id %}">{{ task.name }}</a>
-        </li>
-    {% empty %}
-        <p>Žádné dokončené úkoly.</p>
-    {% endfor %}
-</ul>
-<a href="{% url 'task_list' %}">Zpět na seznam úkolů</a>
+{% if tasks %}
+    <ul>
+        {% for task in tasks %}
+            <li>
+                {{ task.name }} - Dokončeno: {{ task.deadline|date:"d. M. Y H:i" }}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Nemáte žádné dokončené úkoly.</p>
+{% endif %}
+<a href="{% url 'task_list' %}" class="button">Zpět na seznam úkolů</a>
 {% endblock %}

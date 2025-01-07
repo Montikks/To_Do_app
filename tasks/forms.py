@@ -7,10 +7,17 @@ class TaskForm(forms.ModelForm):
         required=False,
         label="Termín (včetně času)"
     )
+    notification_time = forms.IntegerField(
+        min_value=1,
+        max_value=168,  # Max. 7 dní před termínem
+        initial=24,
+        label="Notifikace (hodiny před termínem)",
+        help_text="Kolik hodin před termínem má být odeslána notifikace."
+    )
 
     class Meta:
         model = Task
-        fields = ['name', 'description', 'completed', 'deadline']
+        fields = ['name', 'description', 'completed', 'deadline', 'notification_time']
 
 class SubtaskForm(forms.ModelForm):
     class Meta:
