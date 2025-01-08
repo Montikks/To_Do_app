@@ -1,39 +1,38 @@
-/* RESET */
+/* RESET + základ */
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 body {
-    background-color: #f0f2f5;
-    color: #333;
-    line-height: 1.5;
+  background-color: #f0f2f5;
+  color: #333;
+  line-height: 1.5;
 }
 
 /* Odkazy a tlačítka */
 a {
-    color: #007bff;
-    text-decoration: none;
-    transition: color 0.3s;
+  color: #007bff;
+  text-decoration: none;
 }
 a:hover {
-    color: #0056b3;
+  color: #0056b3;
 }
 .button, button {
-    display: inline-block;
-    padding: 8px 15px;
-    border-radius: 5px;
-    font-weight: 600;
-    font-size: 14px;
-    cursor: pointer;
-    border: none;
-    margin-right: 5px;
-    text-decoration: none;
-    transition: background-color 0.3s, color 0.3s;
+  display: inline-block;
+  padding: 8px 15px;
+  border-radius: 5px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  margin-right: 5px;
+  text-decoration: none;
+  transition: background-color 0.3s, color 0.3s;
 }
 .button:hover, button:hover {
-    filter: brightness(0.95);
+  filter: brightness(0.95);
 }
 .complete { background-color: #28a745; color: #fff; }
 .delete   { background-color: #dc3545; color: #fff; }
@@ -41,49 +40,53 @@ a:hover {
 
 /* Hlavička, container */
 header {
-    background-color: #007bff;
-    color: #fff;
-    padding: 15px;
+  background-color: #007bff;
+  color: #fff;
+  padding: 15px;
 }
 .header-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 header h1 a {
-    color: #fff;
-    text-decoration: none;
-    font-size: 1.8em;
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.8em;
+}
+header nav a {
+  color: #fff;
+  margin-left: 10px;
 }
 main {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
 }
 .container {
-    background: #fff;
-    padding: 20px 30px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    margin-bottom: 20px;
+  background: #fff;
+  padding: 20px 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  margin-bottom: 20px;
 }
 footer {
-    text-align: center;
-    margin-top: 0;
-    padding: 15px 0;
-    color: #6c757d;
-    font-size: 14px;
-    background-color: #f8f9fa;
-    border-top: 1px solid #ddd;
+  text-align: center;
+  margin-top: 0;
+  padding: 15px 0;
+  color: #6c757d;
+  font-size: 14px;
+  background-color: #f8f9fa;
+  border-top: 1px solid #ddd;
 }
 
 /* Nadpisy */
 h1, h2, h3 {
-    margin-bottom: 15px;
-    color: #343a40;
-    font-weight: normal;
+  margin-bottom: 15px;
+  color: #343a40;
+  font-weight: normal;
 }
 h1 { font-size: 2em; }
 h2 { font-size: 1.6em; }
@@ -91,151 +94,183 @@ h3 { font-size: 1.3em; }
 
 /* Formuláře */
 form label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: 500;
-    color: #495057;
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #495057;
 }
 form input[type="text"],
 form input[type="password"],
 form input[type="datetime-local"],
 form select,
 form textarea {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
-    border: 1px solid #ced4da;
-    border-radius: 5px;
-    font-size: 14px;
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  font-size: 14px;
 }
 
 /* Tabs */
 .tabs {
-    margin-bottom: 20px;
-    display: flex;
-    border-bottom: 1px solid #ddd;
+  margin-bottom: 20px;
+  display: flex;
+  border-bottom: 1px solid #ddd;
 }
 .tablink {
-    background-color: #f8f9fa;
-    border: none;
-    padding: 10px 15px;
-    cursor: pointer;
-    outline: none;
-    transition: background-color 0.3s;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-    margin-right: 2px;
+  background-color: #f8f9fa;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  outline: none;
+  transition: background-color 0.3s;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  margin-right: 2px;
 }
 .tablink.active {
-    background-color: #fff;
-    border-bottom: 1px solid #fff;
-    font-weight: bold;
+  background-color: #fff;
+  border-bottom: 1px solid #fff;
+  font-weight: bold;
 }
 .tab-content {
-    background: #fff;
-    border-radius: 5px;
-    padding: 20px;
-    border: 1px solid #ddd;
+  background: #fff;
+  border-radius: 5px;
+  padding: 20px;
+  border: 1px solid #ddd;
 }
 .tab-pane {
-    display: none;
+  display: none;
 }
 .tab-pane.active {
-    display: block;
+  display: block;
 }
 
 /* Tabulka úkolů */
 .table-tasks {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
 }
 .table-tasks thead {
-    background-color: #f8f9fa;
+  background-color: #f8f9fa;
 }
 .table-tasks th, .table-tasks td {
-    padding: 10px;
-    border: 1px solid #ddd;
-    vertical-align: top;
+  padding: 10px;
+  border: 1px solid #ddd;
+  vertical-align: top;
 }
 .table-tasks th {
-    text-align: left;
+  text-align: left;
 }
 
-/* Hover subtask */
+/* Wrapper pro horizontální scroll */
+.table-tasks-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 10px;
+}
+
+/* Podúkoly při hoveru */
 .subtask-list {
-    display: none;
-    margin-top: 8px;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background: #f9f9f9;
+  display: none;
+  margin-top: 8px;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background: #f9f9f9;
 }
 .task-row:hover .subtask-list {
-    display: block;
+  display: block;
 }
 
 /* Toasty */
 .toast-container {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 9999;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 .toast {
-    background-color: #fff;
-    border-left: 5px solid #007bff;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    padding: 12px 16px;
-    border-radius: 4px;
-    min-width: 250px;
-    animation: slideIn 0.5s forwards;
+  background-color: #fff;
+  border-left: 5px solid #007bff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  padding: 12px 16px;
+  border-radius: 4px;
+  min-width: 250px;
+  animation: slideIn 0.5s forwards;
 }
 @keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateX(100%);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 .toast p {
-    margin: 0;
-    color: #333;
-    font-size: 14px;
+  margin: 0;
+  color: #333;
+  font-size: 14px;
 }
 .toast-close {
-    float: right;
-    font-weight: bold;
-    color: #999;
-    cursor: pointer;
-    margin-left: 10px;
+  float: right;
+  font-weight: bold;
+  color: #999;
+  cursor: pointer;
+  margin-left: 10px;
 }
 .toast-close:hover {
-    color: #333;
+  color: #333;
 }
 
 /* Live search */
 .live-search-container {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 #live-search-input {
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    width: 300px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 300px;
 }
 #live-results ul {
-    list-style: none;
-    padding: 0;
-    margin: 10px 0 0 0;
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 0 0;
 }
 #live-results li {
-    padding: 5px 0;
-    border-bottom: 1px solid #ddd;
+  padding: 5px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Dark mode */
+.dark-mode {
+  background-color: #1e1e1e;
+  color: #eee;
+}
+.dark-mode .container {
+  background-color: #2a2a2a;
+  color: #eee;
+}
+.dark-mode .table-tasks td,
+.dark-mode .table-tasks th {
+  background-color: #333;
+  color: #eee;
+}
+.dark-mode .tab-content {
+  background-color: #2a2a2a;
+}
+.dark-mode a {
+  color: #9acfff;
+}
+.dark-mode .button {
+  background-color: #666;
+  color: #eee;
 }

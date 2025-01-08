@@ -1,4 +1,3 @@
-<!-- tasks/templates/tasks/dashboard.html -->
 {% extends 'tasks/base.html' %}
 {% load static %}
 
@@ -7,6 +6,7 @@
 {% block content %}
 <h2>To-Do Dashboard</h2>
 
+<!-- Taby -->
 <div class="tabs">
   <button class="tablink active" data-target="tab-tasks">Seznam úkolů</button>
   <button class="tablink" data-target="tab-filters">Filtry a vyhledávání</button>
@@ -18,77 +18,77 @@
   <div id="tab-tasks" class="tab-pane active">
     <h3>Všechny úkoly</h3>
 
-    <!-- Dynamické vyhledávání (AJAX) -->
+    <!-- Live Search -->
     <div class="live-search-container">
       <label for="live-search-input">Rychlé hledání (AJAX):</label>
       <input type="text" id="live-search-input" placeholder="Název / popis...">
       <div id="live-results"></div>
     </div>
 
-    <table class="table-tasks" id="main-task-table">
-      <thead>
-        <tr>
-          <th>Název</th>
-          <th>Termín</th>
-          <th>Stav</th>
-          <th>Akce</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for task in tasks %}
-        <tr class="task-row">
-          <td>
-            {{ task.name }}<br>
-            <small>{{ task.description|slice:":50" }}{% if task.description|length > 50 %}...{% endif %}</small>
-
-            <!-- Hover subtask list -->
-            <div class="subtask-list">
-              <strong>Podúkoly:</strong>
-              <ul>
-                {% for subtask in task.subtasks.all %}
-                <li>
-                  {{ subtask.name }}
-                  {% if not subtask.completed %}
-                    <a href="{% url 'complete_subtask' task.id subtask.id %}" class="button complete">Dokončit</a>
-                  {% else %}
-                    (splněno)
-                  {% endif %}
-                </li>
-                {% empty %}
-                <li>Žádné podúkoly.</li>
-                {% endfor %}
-              </ul>
-              <a href="{% url 'add_subtask' task.id %}" class="button neutral">+ Podúkol</a>
-            </div>
-          </td>
-          <td>
-            {% if task.deadline %}
-              {{ task.deadline|date:"d.m.Y H:i" }}
-            {% else %}
-              -
-            {% endif %}
-          </td>
-          <td>
-            {% if task.completed %}
-              Dokončeno ({{ task.completion_percentage }}%)
-            {% else %}
-              Nedokončeno ({{ task.completion_percentage }}%)
-            {% endif %}
-          </td>
-          <td>
-            {% if not task.completed and task.completion_percentage == 100 %}
-              <a href="{% url 'complete_task' task.id %}" class="button complete">Dokončit</a>
-            {% endif %}
-            <a href="{% url 'task_detail' task.id %}" class="button neutral">Detail</a>
-            <a href="{% url 'edit_task' task.id %}" class="button neutral">Upravit</a>
-            <a href="{% url 'delete_task' task.id %}" class="button delete" onclick="return confirm('Smazat úkol?');">Smazat</a>
-          </td>
-        </tr>
-        {% empty %}
-        <tr><td colspan="4">Žádné úkoly k zobrazení.</td></tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    <div class="table-tasks-wrapper">
+      <table class="table-tasks" id="main-task-table">
+        <thead>
+          <tr>
+            <th>Název</th>
+            <th>Termín</th>
+            <th>Stav</th>
+            <th>Akce</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for task in tasks %}
+          <tr class="task-row">
+            <td>
+              {{ task.name }}<br>
+              <small>{{ task.description|slice:":50" }}{% if task.description|length > 50 %}...{% endif %}</small>
+              <div class="subtask-list">
+                <strong>Podúkoly:</strong>
+                <ul>
+                  {% for sub in task.subtasks.all %}
+                  <li>
+                    {{ sub.name }}
+                    {% if not sub.completed %}
+                      <a href="{% url 'complete_subtask' task.id sub.id %}" class="button complete">Dokončit</a>
+                    {% else %}
+                      (splněno)
+                    {% endif %}
+                  </li>
+                  {% empty %}
+                  <li>Žádné podúkoly.</li>
+                  {% endfor %}
+                </ul>
+                <a href="{% url 'add_subtask' task.id %}" class="button neutral">+ Podúkol</a>
+              </div>
+            </td>
+            <td>
+              {% if task.deadline %}
+                {{ task.deadline|date:"d.m.Y H:i" }}
+              {% else %}
+                -
+              {% endif %}
+            </td>
+            <td>
+              {% if task.completed %}
+                Dokončeno ({{ task.completion_percentage }}%)
+              {% else %}
+                Nedokončeno ({{ task.completion_percentage }}%)
+              {% endif %}
+            </td>
+            <td>
+              {% if not task.completed and task.completion_percentage == 100 %}
+                <a href="{% url 'complete_task' task.id %}" class="button complete">Dokončit</a>
+              {% endif %}
+              <a href="{% url 'task_detail' task.id %}" class="button neutral">Detail</a>
+              <a href="{% url 'edit_task' task.id %}" class="button neutral">Upravit</a>
+              <a href="{% url 'delete_task' task.id %}" class="button delete" onclick="return confirm('Smazat úkol?');">Smazat</a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="4">Žádné úkoly.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
   </div>
 
   <!-- 2) Filtry a vyhledávání -->
@@ -121,7 +121,6 @@
 
       <label for="search">Hledat:</label>
       <input type="text" name="search" id="search" placeholder="Název / popis..." value="{{ search_query }}">
-
       <button type="submit" class="button neutral">Použít filtry</button>
     </form>
   </div>
@@ -139,8 +138,12 @@
 {% endblock %}
 
 {% block extra_js %}
+<!-- Skript s JavaScriptem pro taby, live search -->
 <script>
-  // Přepínání záložek
+document.addEventListener('DOMContentLoaded', function() {
+  console.log("Dashboard JS načten");
+
+  // 1) Přepínání záložek
   const tabLinks = document.querySelectorAll('.tablink');
   const tabPanes = document.querySelectorAll('.tab-pane');
 
@@ -148,48 +151,64 @@
     link.addEventListener('click', () => {
       tabLinks.forEach(l => l.classList.remove('active'));
       tabPanes.forEach(pane => pane.classList.remove('active'));
-
       link.classList.add('active');
-      document.getElementById(link.dataset.target).classList.add('active');
+      const target = document.getElementById(link.dataset.target);
+      if (target) {
+        target.classList.add('active');
+      }
     });
   });
 
-  // Toast notifikace
-  document.addEventListener('DOMContentLoaded', function() {
-    {% for item in upcoming_notifications %}
-      showToast("Úkol '{{ item.task.name }}' se blíží: zbývá {{ item.hours }}h {{ item.minutes }}m!");
-    {% endfor %}
+  console.log("Taby nastaveny");
 
-    {% for t in overdue_notifications %}
-      showToast("Úkol '{{ t.name }}' je po termínu!");
-    {% endfor %}
-  });
+  // 2) Toast notifikace
+  {% for item in upcoming_notifications %}
+    showToast("Úkol '{{ item.task.name }}' se blíží: zbývá {{ item.hours }}h {{ item.minutes }}m!");
+  {% endfor %}
+  {% for t in overdue_notifications %}
+    showToast("Úkol '{{ t.name }}' je po termínu!");
+  {% endfor %}
 
-  // Live search (AJAX)
+  console.log("Toast notifikace spuštěny");
+
+  // 3) Live search (AJAX)
   const liveInput = document.getElementById('live-search-input');
   const liveResultsDiv = document.getElementById('live-results');
-
-  liveInput.addEventListener('keyup', function() {
-    const q = liveInput.value.trim();
-    fetch(`/ajax_search/?query=${encodeURIComponent(q)}`)
-      .then(resp => resp.json())
-      .then(data => {
-        const tasks = data.tasks;
-        let html = '<ul>';
-        tasks.forEach(task => {
-          html += `<li>
-            <strong>${task.name}</strong>
-            ${task.deadline ? ' - ' + task.deadline : ''}
-            - ${task.completed ? 'Dokončeno' : 'Nedokončeno'}
-            (${task.completion_percentage}%)
-          </li>`;
+  if (liveInput) {
+    liveInput.addEventListener('keyup', () => {
+      const q = liveInput.value.trim();
+      if (!q) {
+        liveResultsDiv.innerHTML = "";
+        return;
+      }
+      fetch(`/ajax_search/?query=${encodeURIComponent(q)}`)
+        .then(resp => resp.json())
+        .then(data => {
+          const tasks = data.tasks || [];
+          if (tasks.length === 0) {
+            liveResultsDiv.innerHTML = "<p>Žádné výsledky</p>";
+          } else {
+            let html = "<ul>";
+            tasks.forEach(task => {
+              html += `<li>
+                <strong>${task.name}</strong>
+                ${task.deadline ? ' - ' + task.deadline : ''}
+                - ${task.completed ? 'Dokončeno' : 'Nedokončeno'}
+                (${task.completion_percentage}%)
+              </li>`;
+            });
+            html += "</ul>";
+            liveResultsDiv.innerHTML = html;
+          }
+        })
+        .catch(err => {
+          console.error("Chyba při fetch:", err);
+          liveResultsDiv.innerHTML = "<p>Chyba při načítání výsledků.</p>";
         });
-        html += '</ul>';
-        liveResultsDiv.innerHTML = html;
-      })
-      .catch(err => {
-        console.error(err);
-      });
-  });
+    });
+  }
+
+  console.log("Live search nastaven");
+});
 </script>
 {% endblock %}

@@ -1,0 +1,19 @@
+<!-- tasks/templates/tasks/advanced_notifications.html -->
+{% extends 'tasks/base.html' %}
+{% block title %}Pokročilé notifikace{% endblock %}
+
+{% block content %}
+<h2>Pokročilé notifikace</h2>
+
+{% if message %}
+  <p>{{ message }}</p>
+{% else %}
+  <p>Tady můžeš odeslat e-mail o úkolech s deadline do 24 hodin:</p>
+  <form method="POST">
+    {% csrf_token %}
+    <button type="submit" class="button neutral">Odeslat e-mail</button>
+  </form>
+{% endif %}
+
+<p><a href="{% url 'dashboard' %}" class="button neutral">Zpět na dashboard</a></p>
+{% endblock %}
