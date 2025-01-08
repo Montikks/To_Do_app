@@ -1,12 +1,12 @@
+<!-- tasks/templates/tasks/register.html -->
 {% extends 'tasks/base.html' %}
-
 {% block title %}Registrace{% endblock %}
 
 {% block content %}
 <h2>Registrace</h2>
 <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Registrovat</button>
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit" class="button neutral">Registrovat</button>
 </form>
 {% endblock %}

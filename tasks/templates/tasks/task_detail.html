@@ -1,43 +1,45 @@
+<!-- tasks/templates/tasks/task_detail.html -->
 {% extends 'tasks/base.html' %}
-
 {% block title %}Detail úkolu{% endblock %}
 
 {% block content %}
-<h2>Detail úkolu</h2>
-<p><strong>Název:</strong> {{ task.name }}</p>
+<h2>Detail úkolu: {{ task.name }}</h2>
 <p><strong>Popis:</strong> {{ task.description }}</p>
-<p><strong>Hotový:</strong> {{ task.completed|yesno:"Ano,Ne" }}</p>
-<p><strong>Procento dokončení:</strong> {{ task.completion_percentage }}%</p>
+<p><strong>Dokončeno:</strong> {{ task.completed|yesno:"Ano,Ne" }} ({{ task.completion_percentage }}%)</p>
+<p><strong>Termín:</strong>
+  {% if task.deadline %}
+    {{ task.deadline|date:"d.m.Y H:i" }}
+  {% else %}
+    -
+  {% endif %}
+</p>
 
-{% if can_complete_task %}
-    <a href="{% url 'complete_task' task.id %}" class="button complete">Dokončit úkol</a>
+{% if not task.completed and task.completion_percentage == 100 %}
+  <p><a href="{% url 'complete_task' task.id %}" class="button complete">Dokončit úkol</a></p>
 {% endif %}
 
+<hr>
 <h3>Podúkoly</h3>
 <ul>
   {% for subtask in subtasks %}
     <li>
       {{ subtask.name }}
       {% if not subtask.completed %}
-        | <a href="{% url 'complete_subtask' task.id subtask.id %}" class="button complete">Označit jako splněný</a>
+        | <a href="{% url 'complete_subtask' task.id subtask.id %}" class="button complete">Splnit</a>
       {% else %}
         - Splněno
       {% endif %}
-      | <a href="{% url 'delete_subtask' task.id subtask.id %}" class="button delete" onclick="return confirm('Opravdu chcete smazat tento podúkol?');">Smazat</a>
+      | <a href="{% url 'delete_subtask' task.id subtask.id %}" class="button delete" onclick="return confirm('Smazat tento podúkol?');">Smazat</a>
+      | <a href="{% url 'edit_subtask' task.id subtask.id %}" class="button neutral">Upravit</a>
     </li>
   {% empty %}
     <li>Žádné podúkoly.</li>
   {% endfor %}
 </ul>
 
-<p><strong>Termín splnění:</strong> {{ task.deadline|date:"d.m.Y H:i" }}
-</p>
+<p><a href="{% url 'add_subtask' task.id %}" class="button neutral">Přidat podúkol</a></p>
 
-
-<p><a href="{% url 'add_subtask' task.id %}">Přidat podúkol</a></p>
-
-<p>
-  <a href="{% url 'task_list' %}">Zpět na seznam úkolů</a> |
-  <a href="{% url 'delete_task' task.id %}" onclick="return confirm('Opravdu chcete smazat tento úkol?');">Smazat úkol</a>
-</p>
+<hr>
+<p><a href="{% url 'dashboard' %}" class="button neutral">Zpět na seznam</a>
+<a href="{% url 'delete_task' task.id %}" class="button delete" onclick="return confirm('Smazat celý úkol?');">Smazat úkol</a></p>
 {% endblock %}

@@ -1,35 +1,74 @@
+<!-- tasks/templates/tasks/base.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="cs">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% load static %}
-    <title>{% block title %}To-Do Aplikace{% endblock %}</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'tasks/css/styles.css' %}">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  {% load static %}
+  <title>{% block title %}To-Do Aplikace{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'tasks/css/styles.css' %}">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
 </head>
 <body>
-    <header>
-        <h1><a href="{% url 'task_list' %}">To-Do Aplikace</a></h1>
-        <nav>
-            <p>
-            {% if user.is_authenticated %}
-                Přihlašen jako: {{ user.username }} (<a href="{% url 'logout' %}">Odhlásit</a>)
-            {% else %}
-                <a href="{% url 'login' %}">Přihlásit</a> | <a href="{% url 'register' %}">Registrovat</a>
-            {% endif %}
-            </p>
-        </nav>
-    </header>
-    <main>
-        <div class="container">
-            {% block content %}
-            {% endblock %}
-        </div>
-    </main>
-    <footer>
-        <p>© 2024 To-Do-App</p>
-    </footer>
+
+<header>
+  <div class="header-content">
+    <h1><a href="{% url 'dashboard' %}">To-Do Aplikace</a></h1>
+    <nav>
+      {% if user.is_authenticated %}
+        Přihlášen jako: {{ user.username }} |
+        <a href="{% url 'logout' %}">Odhlásit</a>
+      {% else %}
+        <a href="{% url 'login' %}">Přihlásit</a> |
+        <a href="{% url 'register' %}">Registrovat</a>
+      {% endif %}
+    </nav>
+  </div>
+</header>
+
+<div class="toast-container" id="toast-container"></div>
+
+<main>
+  <div class="container">
+    {% block content %}{% endblock %}
+  </div>
+</main>
+
+<footer>
+  <p>© 2025 To-Do-App</p>
+</footer>
+
+<script>
+function showToast(message) {
+  const container = document.getElementById('toast-container');
+  if (!container) return;
+
+  const toast = document.createElement('div');
+  toast.classList.add('toast');
+
+  const closeBtn = document.createElement('span');
+  closeBtn.classList.add('toast-close');
+  closeBtn.innerHTML = '&times;';
+  closeBtn.addEventListener('click', () => {
+    container.removeChild(toast);
+  });
+
+  const msgP = document.createElement('p');
+  msgP.innerText = message;
+
+  toast.appendChild(closeBtn);
+  toast.appendChild(msgP);
+
+  container.appendChild(toast);
+
+  setTimeout(() => {
+    if (toast.parentNode === container) {
+      container.removeChild(toast);
+    }
+  }, 5000);
+}
+</script>
+
+{% block extra_js %}{% endblock %}
 </body>
 </html>

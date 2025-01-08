@@ -1,5 +1,4 @@
 {% extends 'tasks/base.html' %}
-
 {% block title %}Upravit podúkol{% endblock %}
 
 {% block content %}
@@ -7,8 +6,7 @@
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit" class="button neutral">Uložit změny</button>
+    <button type="submit" class="button neutral">Uložit</button>
 </form>
-<p><a href="{% url 'task_detail' task.id %}">Zpět na detail úkolu</a></p>
+<a href="{% url 'task_detail' task.id %}" class="button neutral">Zpět na detail úkolu</a>
 {% endblock %}
-

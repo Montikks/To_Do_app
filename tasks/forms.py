@@ -1,3 +1,4 @@
+# tasks/forms.py
 from django import forms
 from .models import Task, Subtask
 
@@ -9,7 +10,7 @@ class TaskForm(forms.ModelForm):
     )
     notification_time = forms.IntegerField(
         min_value=1,
-        max_value=168,  # Max. 7 dní před termínem
+        max_value=72,  # ladí s validate_notification_time
         initial=24,
         label="Notifikace (hodiny před termínem)",
         help_text="Kolik hodin před termínem má být odeslána notifikace."

@@ -1,0 +1,195 @@
+<!-- tasks/templates/tasks/dashboard.html -->
+{% extends 'tasks/base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - To-Do{% endblock %}
+
+{% block content %}
+<h2>To-Do Dashboard</h2>
+
+<div class="tabs">
+  <button class="tablink active" data-target="tab-tasks">Seznam úkolů</button>
+  <button class="tablink" data-target="tab-filters">Filtry a vyhledávání</button>
+  <button class="tablink" data-target="tab-add">Přidat úkol</button>
+</div>
+
+<div class="tab-content">
+  <!-- 1) Seznam úkolů -->
+  <div id="tab-tasks" class="tab-pane active">
+    <h3>Všechny úkoly</h3>
+
+    <!-- Dynamické vyhledávání (AJAX) -->
+    <div class="live-search-container">
+      <label for="live-search-input">Rychlé hledání (AJAX):</label>
+      <input type="text" id="live-search-input" placeholder="Název / popis...">
+      <div id="live-results"></div>
+    </div>
+
+    <table class="table-tasks" id="main-task-table">
+      <thead>
+        <tr>
+          <th>Název</th>
+          <th>Termín</th>
+          <th>Stav</th>
+          <th>Akce</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for task in tasks %}
+        <tr class="task-row">
+          <td>
+            {{ task.name }}<br>
+            <small>{{ task.description|slice:":50" }}{% if task.description|length > 50 %}...{% endif %}</small>
+
+            <!-- Hover subtask list -->
+            <div class="subtask-list">
+              <strong>Podúkoly:</strong>
+              <ul>
+                {% for subtask in task.subtasks.all %}
+                <li>
+                  {{ subtask.name }}
+                  {% if not subtask.completed %}
+                    <a href="{% url 'complete_subtask' task.id subtask.id %}" class="button complete">Dokončit</a>
+                  {% else %}
+                    (splněno)
+                  {% endif %}
+                </li>
+                {% empty %}
+                <li>Žádné podúkoly.</li>
+                {% endfor %}
+              </ul>
+              <a href="{% url 'add_subtask' task.id %}" class="button neutral">+ Podúkol</a>
+            </div>
+          </td>
+          <td>
+            {% if task.deadline %}
+              {{ task.deadline|date:"d.m.Y H:i" }}
+            {% else %}
+              -
+            {% endif %}
+          </td>
+          <td>
+            {% if task.completed %}
+              Dokončeno ({{ task.completion_percentage }}%)
+            {% else %}
+              Nedokončeno ({{ task.completion_percentage }}%)
+            {% endif %}
+          </td>
+          <td>
+            {% if not task.completed and task.completion_percentage == 100 %}
+              <a href="{% url 'complete_task' task.id %}" class="button complete">Dokončit</a>
+            {% endif %}
+            <a href="{% url 'task_detail' task.id %}" class="button neutral">Detail</a>
+            <a href="{% url 'edit_task' task.id %}" class="button neutral">Upravit</a>
+            <a href="{% url 'delete_task' task.id %}" class="button delete" onclick="return confirm('Smazat úkol?');">Smazat</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4">Žádné úkoly k zobrazení.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 2) Filtry a vyhledávání -->
+  <div id="tab-filters" class="tab-pane">
+    <h3>Filtry a vyhledávání</h3>
+    <form method="get" action="">
+      <label for="status">Filtr stav:</label>
+      <select name="status" id="status">
+        <option value="" {% if not filter_status %}selected{% endif %}>Všechny</option>
+        <option value="completed" {% if filter_status == 'completed' %}selected{% endif %}>Dokončené</option>
+        <option value="pending" {% if filter_status == 'pending' %}selected{% endif %}>Nedokončené</option>
+      </select>
+
+      <label for="deadline">Filtr termín:</label>
+      <select name="deadline" id="deadline">
+        <option value="" {% if not filter_deadline %}selected{% endif %}>Všechny</option>
+        <option value="today" {% if filter_deadline == 'today' %}selected{% endif %}>Dnes</option>
+        <option value="upcoming" {% if filter_deadline == 'upcoming' %}selected{% endif %}>Připravované</option>
+        <option value="overdue" {% if filter_deadline == 'overdue' %}selected{% endif %}>Po termínu</option>
+      </select>
+
+      <label for="sort">Řazení:</label>
+      <select name="sort" id="sort">
+        <option value="" {% if not sort_option %}selected{% endif %}>Výchozí</option>
+        <option value="deadline_asc" {% if sort_option == 'deadline_asc' %}selected{% endif %}>Termín vzestupně</option>
+        <option value="deadline_desc" {% if sort_option == 'deadline_desc' %}selected{% endif %}>Termín sestupně</option>
+        <option value="completion_asc" {% if sort_option == 'completion_asc' %}selected{% endif %}>Dokončení vzestupně</option>
+        <option value="completion_desc" {% if sort_option == 'completion_desc' %}selected{% endif %}>Dokončení sestupně</option>
+      </select>
+
+      <label for="search">Hledat:</label>
+      <input type="text" name="search" id="search" placeholder="Název / popis..." value="{{ search_query }}">
+
+      <button type="submit" class="button neutral">Použít filtry</button>
+    </form>
+  </div>
+
+  <!-- 3) Přidat úkol -->
+  <div id="tab-add" class="tab-pane">
+    <h3>Přidat nový úkol</h3>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="button neutral">Přidat úkol</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Přepínání záložek
+  const tabLinks = document.querySelectorAll('.tablink');
+  const tabPanes = document.querySelectorAll('.tab-pane');
+
+  tabLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      tabLinks.forEach(l => l.classList.remove('active'));
+      tabPanes.forEach(pane => pane.classList.remove('active'));
+
+      link.classList.add('active');
+      document.getElementById(link.dataset.target).classList.add('active');
+    });
+  });
+
+  // Toast notifikace
+  document.addEventListener('DOMContentLoaded', function() {
+    {% for item in upcoming_notifications %}
+      showToast("Úkol '{{ item.task.name }}' se blíží: zbývá {{ item.hours }}h {{ item.minutes }}m!");
+    {% endfor %}
+
+    {% for t in overdue_notifications %}
+      showToast("Úkol '{{ t.name }}' je po termínu!");
+    {% endfor %}
+  });
+
+  // Live search (AJAX)
+  const liveInput = document.getElementById('live-search-input');
+  const liveResultsDiv = document.getElementById('live-results');
+
+  liveInput.addEventListener('keyup', function() {
+    const q = liveInput.value.trim();
+    fetch(`/ajax_search/?query=${encodeURIComponent(q)}`)
+      .then(resp => resp.json())
+      .then(data => {
+        const tasks = data.tasks;
+        let html = '<ul>';
+        tasks.forEach(task => {
+          html += `<li>
+            <strong>${task.name}</strong>
+            ${task.deadline ? ' - ' + task.deadline : ''}
+            - ${task.completed ? 'Dokončeno' : 'Nedokončeno'}
+            (${task.completion_percentage}%)
+          </li>`;
+        });
+        html += '</ul>';
+        liveResultsDiv.innerHTML = html;
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  });
+</script>
+{% endblock %}

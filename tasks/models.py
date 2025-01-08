@@ -1,3 +1,4 @@
+# tasks/models.py
 from django.db import models
 from django.utils.timezone import now
 from datetime import timedelta
@@ -26,12 +27,16 @@ class Task(models.Model):
     )
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
 
-    def is_notification_due(self):
-        if not self.deadline or self.notification_time is None:
-            return False
-        current_time = now()
-        notification_threshold = self.deadline - timedelta(hours=self.notification_time)
-        return notification_threshold <= current_time <= self.deadline
+    def __str__(self):
+        return self.name
+
+    def completion_percentage(self):
+        total = self.subtasks.count()
+        if total == 0:
+            return 100 if self.completed else 0
+        done = self.subtasks.filter(completed=True).count()
+        # zaokrouhlení na celé %:
+        return int((done / total) * 100)
 
     def get_time_until_deadline(self):
         if not self.deadline:
@@ -41,17 +46,17 @@ class Task(models.Model):
             hours, remainder = divmod(time_diff.total_seconds(), 3600)
             minutes, _ = divmod(remainder, 60)
             return int(hours), int(minutes)
-        return None  # Pokud je termín již prošlý
+        return None  # prošlý termín
 
-    def __str__(self):
-        return self.name
-
-    def completion_percentage(self):
-        total = self.subtasks.count()
-        if total == 0:
-            return 100 if self.completed else 0
-        done = self.subtasks.filter(completed=True).count()
-        return round((done / total) * 100, 2)
+    def is_notification_due(self):
+        """
+        Určuje, zda je čas na notifikaci (deadline - notification_time <= now <= deadline).
+        """
+        if not self.deadline or self.notification_time is None:
+            return False
+        current_time = now()
+        notification_threshold = self.deadline - timedelta(hours=self.notification_time)
+        return notification_threshold <= current_time <= self.deadline
 
 class Subtask(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='subtasks')
@@ -60,20 +65,3 @@ class Subtask(models.Model):
 
     def __str__(self):
         return f"{self.name} (Subtask of {self.task.name})"
-
-
-def is_notification_due(self):
-    if not self.deadline or self.notification_time is None:
-        print(f"[DEBUG] Task '{self.name}' - Missing deadline or notification_time")
-        return False
-
-    current_time = now()
-    notification_threshold = self.deadline - timedelta(hours=self.notification_time)
-    print(f"[DEBUG] Task '{self.name}':")
-    print(f"  Current time: {current_time}")
-    print(f"  Notification threshold: {notification_threshold}")
-    print(f"  Deadline: {self.deadline}")
-
-    result = notification_threshold <= current_time <= self.deadline
-    print(f"  Notification due: {result}")
-    return result

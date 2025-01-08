@@ -1,5 +1,4 @@
 {% extends 'tasks/base.html' %}
-
 {% block title %}Přidat nový úkol{% endblock %}
 
 {% block content %}
@@ -9,5 +8,5 @@
     {{ form.as_p }}
     <button type="submit" class="button neutral">Přidat úkol</button>
 </form>
-<a href="{% url 'task_list' %}">Zpět na seznam úkolů</a>
+<a href="{% url 'task_list' %}" class="button neutral">Zpět na seznam úkolů</a>
 {% endblock %}
