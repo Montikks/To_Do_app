@@ -1,21 +1,16 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django import forms
-
 
 
 class RegisterForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
     password_confirm = forms.CharField(widget=forms.PasswordInput, label="Confirm password")
 
-
-
     class Meta:
         model = User
         fields = ['username', 'email']
-
-
 
     def clean(self):
         cleaned_data = super().clean()
@@ -24,9 +19,6 @@ class RegisterForm(forms.ModelForm):
         if password != password_confirm:
             raise forms.ValidationError("Passwords do not match")
         return cleaned_data
-
-
-
 
 
 def register_view(request):
@@ -42,22 +34,20 @@ def register_view(request):
     return render(request, 'tasks/register.html', {'form': form})
 
 
-
-
-
 def login_view(request):
+    error = None
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
+        username = request.POST.get('username', '')
+        password = request.POST.get('password', '')
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('task_list')
-    return render(request, 'tasks/login.html');
-
-
+            return redirect('dashboard')
+        else:
+            error = "Nesprávné uživatelské jméno nebo heslo."
+    return render(request, 'tasks/login.html', {'error': error})
 
 
 def logout_view(request):
     logout(request)
-    return redirect('task_list')
+    return redirect('dashboard')

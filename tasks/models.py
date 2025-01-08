@@ -1,4 +1,3 @@
-# tasks/models.py
 from django.db import models
 from django.utils.timezone import now
 from datetime import timedelta
@@ -35,7 +34,6 @@ class Task(models.Model):
         if total == 0:
             return 100 if self.completed else 0
         done = self.subtasks.filter(completed=True).count()
-        # zaokrouhlení na celé %:
         return int((done / total) * 100)
 
     def get_time_until_deadline(self):
@@ -46,12 +44,9 @@ class Task(models.Model):
             hours, remainder = divmod(time_diff.total_seconds(), 3600)
             minutes, _ = divmod(remainder, 60)
             return int(hours), int(minutes)
-        return None  # prošlý termín
+        return None
 
     def is_notification_due(self):
-        """
-        Určuje, zda je čas na notifikaci (deadline - notification_time <= now <= deadline).
-        """
         if not self.deadline or self.notification_time is None:
             return False
         current_time = now()
