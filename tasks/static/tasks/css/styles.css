@@ -1,27 +1,95 @@
-/* RESET + základ */
+/* RESET + ZÁKLAD */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+
 body {
-  background-color: #f0f2f5;
-  color: #333;
-  line-height: 1.5;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  line-height: 1.6;
+  transition: background-color 0.3s, color 0.3s;
 }
 
-/* Odkazy a tlačítka */
+/* CSS PROMĚNNÉ */
+:root {
+  /* Light Mode */
+  --background-color: #f0f2f5;
+  --text-color: #333333;
+  --header-bg: #007bff;
+  --header-text: #ffffff;
+  --link-color: #007bff;
+  --link-hover-color: #0056b3;
+  --button-bg: #6c757d;
+  --button-text: #ffffff;
+  --button-hover-bg: #5a6268;
+  --complete-bg: #28a745;
+  --complete-hover-bg: #218838;
+  --delete-bg: #dc3545;
+  --delete-hover-bg: #c82333;
+  --neutral-bg: #6c757d;
+  --neutral-hover-bg: #5a6268;
+  --detail-bg: #17a2b8; /* Proměnná pro tlačítko Detail */
+  --detail-hover-bg: #138496;
+  --edit-bg: #ffc107; /* Proměnná pro tlačítko Upravit */
+  --edit-hover-bg: #e0a800;
+  --container-bg: #ffffff;
+  --table-header-bg: #e9ecef;
+  --toast-bg: #ffffff;
+  --toast-text: #333333;
+  --toast-border: #007bff;
+  --subtask-bg: #f8f9fa;
+  --subtask-text: #333333;
+
+  /* Dark Mode Specific Colors are defined below */
+}
+
+.dark-mode {
+  /* Dark Mode */
+  --background-color: #121212;
+  --text-color: #e0e0e0;
+  --header-bg: #1f1f1f;
+  --header-text: #ffffff;
+  --link-color: #bb86fc;
+  --link-hover-color: #9acfff;
+  --button-bg: #444444;
+  --button-text: #e0e0e0;
+  --button-hover-bg: #555555;
+  --complete-bg: #4caf50;
+  --complete-hover-bg: #43a047;
+  --delete-bg: #f44336;
+  --delete-hover-bg: #d32f2f;
+  --neutral-bg: #555555;
+  --neutral-hover-bg: #666666;
+  --detail-bg: #117a8b;
+  --detail-hover-bg: #0f6674;
+  --edit-bg: #d39e00;
+  --edit-hover-bg: #b38f00;
+  --container-bg: #1e1e1e;
+  --table-header-bg: #2c2c2c;
+  --toast-bg: #333333;
+  --toast-text: #ffffff;
+  --toast-border: #bb86fc;
+  --subtask-bg: #2a2a2a;
+  --subtask-text: #ffffff;
+}
+
+/* ODKAZY A TLAČÍTKA */
 a {
-  color: #007bff;
+  color: var(--link-color);
   text-decoration: none;
+  transition: color 0.3s;
 }
+
 a:hover {
-  color: #0056b3;
+  color: var(--link-hover-color);
 }
+
 .button, button {
   display: inline-block;
-  padding: 8px 15px;
+  padding: 10px 20px;
   border-radius: 5px;
   font-weight: 600;
   font-size: 14px;
@@ -31,179 +99,293 @@ a:hover {
   text-decoration: none;
   transition: background-color 0.3s, color 0.3s;
 }
+
 .button:hover, button:hover {
   filter: brightness(0.95);
 }
-.complete { background-color: #28a745; color: #fff; }
-.delete   { background-color: #dc3545; color: #fff; }
-.neutral  { background-color: #6c757d; color: #fff; }
 
-/* Hlavička, container */
-header {
-  background-color: #007bff;
-  color: #fff;
-  padding: 15px;
+/* SPECIFICKÉ TLAČÍTKA */
+.complete {
+  background-color: var(--complete-bg);
+  color: var(--button-text);
 }
+
+.complete:hover {
+  background-color: var(--complete-hover-bg);
+}
+
+.delete {
+  background-color: var(--delete-bg);
+  color: var(--button-text);
+}
+
+.delete:hover {
+  background-color: var(--delete-hover-bg);
+}
+
+.neutral {
+  background-color: var(--neutral-bg);
+  color: var(--button-text);
+}
+
+.neutral:hover {
+  background-color: var(--neutral-hover-bg);
+}
+
+/* NOVÉ TLAČÍTKA S VYŠŠÍ SPECIFIČITOU */
+.button.detail {
+  background-color: var(--detail-bg);
+  color: var(--button-text);
+}
+
+.button.detail:hover {
+  background-color: var(--detail-hover-bg);
+}
+
+.button.edit {
+  background-color: var(--edit-bg);
+  color: #212529; /* Tmavší text pro lepší kontrast na žlutém pozadí */
+}
+
+.button.edit:hover {
+  background-color: var(--edit-hover-bg);
+}
+
+/* NOVÁ TŘÍDA PRO DARK MODE TOGGLE */
+.button.dark-mode-toggle {
+  background-color: var(--neutral-bg); /* Můžete upravit podle potřeby */
+  color: var(--button-text);
+}
+
+.button.dark-mode-toggle:hover {
+  background-color: var(--neutral-hover-bg);
+}
+
+/* HLAVIČKA, CONTAINER */
+header {
+  background-color: var(--header-bg);
+  color: var(--header-text);
+  padding: 15px 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: background-color 0.3s, color 0.3s;
+}
+
 .header-content {
   max-width: 1200px;
   margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 0 20px;
 }
+
 header h1 a {
-  color: #fff;
+  color: var(--header-text);
   text-decoration: none;
   font-size: 1.8em;
+  transition: color 0.3s;
 }
+
 header nav a {
-  color: #fff;
-  margin-left: 10px;
+  color: var(--header-text);
+  margin-left: 15px;
+  font-size: 14px;
+  transition: color 0.3s;
 }
+
+/* MAIN A CONTAINER */
 main {
   max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
+  margin: 20px auto;
+  padding: 0 20px;
 }
+
 .container {
-  background: #fff;
-  padding: 20px 30px;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-  margin-bottom: 20px;
+  background: var(--container-bg);
+  padding: 30px 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  margin-bottom: 30px;
+  transition: background-color 0.3s, color 0.3s;
 }
+
+/* FOOTER */
 footer {
   text-align: center;
-  margin-top: 0;
   padding: 15px 0;
-  color: #6c757d;
+  color: var(--text-color);
   font-size: 14px;
-  background-color: #f8f9fa;
+  background-color: var(--header-bg);
   border-top: 1px solid #ddd;
+  transition: background-color 0.3s, color 0.3s;
 }
 
-/* Nadpisy */
+/* NADPISY */
 h1, h2, h3 {
-  margin-bottom: 15px;
-  color: #343a40;
-  font-weight: normal;
+  margin-bottom: 20px;
+  color: var(--text-color);
+  font-weight: 500;
+  transition: color 0.3s;
 }
-h1 { font-size: 2em; }
-h2 { font-size: 1.6em; }
-h3 { font-size: 1.3em; }
 
-/* Formuláře */
+h1 { font-size: 2.5em; }
+h2 { font-size: 2em; }
+h3 { font-size: 1.6em; }
+
+/* FORMULÁŘE */
 form label {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
   font-weight: 500;
-  color: #495057;
+  color: var(--text-color);
+  transition: color 0.3s;
 }
+
 form input[type="text"],
 form input[type="password"],
 form input[type="datetime-local"],
 form select,
 form textarea {
   width: 100%;
-  padding: 8px;
-  margin-bottom: 10px;
+  padding: 10px;
+  margin-bottom: 15px;
   border: 1px solid #ced4da;
   border-radius: 5px;
   font-size: 14px;
+  background-color: #fff;
+  color: var(--text-color);
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
 }
 
-/* Tabs */
-.tabs {
-  margin-bottom: 20px;
-  display: flex;
-  border-bottom: 1px solid #ddd;
+.dark-mode form input[type="text"],
+.dark-mode form input[type="password"],
+.dark-mode form input[type="datetime-local"],
+.dark-mode form select,
+.dark-mode form textarea {
+  background-color: #2a2a2a;
+  color: #e0e0e0;
+  border: 1px solid #444444;
 }
+
+/* TABS */
+.tabs {
+  margin-bottom: 25px;
+  display: flex;
+  border-bottom: 2px solid #ddd;
+}
+
 .tablink {
-  background-color: #f8f9fa;
+  background-color: var(--container-bg);
   border: none;
-  padding: 10px 15px;
+  padding: 12px 20px;
   cursor: pointer;
   outline: none;
-  transition: background-color 0.3s;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
-  margin-right: 2px;
+  transition: background-color 0.3s, color 0.3s;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  margin-right: 5px;
+  font-size: 16px;
+  color: var(--text-color);
 }
+
 .tablink.active {
-  background-color: #fff;
-  border-bottom: 1px solid #fff;
+  background-color: var(--background-color);
+  border-bottom: 2px solid var(--background-color);
   font-weight: bold;
 }
+
 .tab-content {
-  background: #fff;
-  border-radius: 5px;
-  padding: 20px;
+  background: var(--container-bg);
+  border-radius: 8px;
+  padding: 25px;
   border: 1px solid #ddd;
+  transition: background-color 0.3s, color 0.3s;
 }
+
 .tab-pane {
   display: none;
 }
+
 .tab-pane.active {
   display: block;
 }
 
-/* Tabulka úkolů */
+/* TABULKA ÚKOLŮ */
 .table-tasks {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 10px;
+  margin-top: 15px;
 }
+
 .table-tasks thead {
-  background-color: #f8f9fa;
+  background-color: var(--table-header-bg);
 }
+
 .table-tasks th, .table-tasks td {
-  padding: 10px;
+  padding: 12px 15px;
   border: 1px solid #ddd;
   vertical-align: top;
 }
+
 .table-tasks th {
   text-align: left;
+  font-weight: 600;
+  color: var(--text-color);
+  transition: color 0.3s;
 }
 
-/* Wrapper pro horizontální scroll */
+.table-tasks td {
+  color: var(--text-color);
+  transition: color 0.3s;
+}
+
+/* WRAPPER PRO HORIZONTÁLNÍ SCROLL */
 .table-tasks-wrapper {
   width: 100%;
   overflow-x: auto;
-  margin-top: 10px;
+  margin-top: 15px;
 }
 
-/* Podúkoly při hoveru */
+/* PODÚKOLY PŘI HOVERU */
 .subtask-list {
   display: none;
-  margin-top: 8px;
-  padding: 8px;
+  margin-top: 10px;
+  padding: 15px;
   border: 1px solid #ddd;
   border-radius: 5px;
-  background: #f9f9f9;
+  background: var(--subtask-bg);
+  transition: background-color 0.3s, color 0.3s;
 }
+
 .task-row:hover .subtask-list {
   display: block;
 }
 
-/* Toasty */
+/* TOASTY */
 .toast-container {
   position: fixed;
-  top: 20px;
-  right: 20px;
+  top: 25px;
+  right: 25px;
   z-index: 9999;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 15px;
 }
+
 .toast {
-  background-color: #fff;
-  border-left: 5px solid #007bff;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  padding: 12px 16px;
-  border-radius: 4px;
-  min-width: 250px;
+  background-color: var(--toast-bg);
+  border-left: 5px solid var(--toast-border);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+  padding: 15px 20px;
+  border-radius: 6px;
+  min-width: 300px;
   animation: slideIn 0.5s forwards;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background-color 0.3s, color 0.3s, border-left-color 0.3s;
 }
+
 @keyframes slideIn {
   from {
     opacity: 0;
@@ -214,63 +396,143 @@ form textarea {
     transform: translateX(0);
   }
 }
+
 .toast p {
   margin: 0;
-  color: #333;
+  color: var(--toast-text);
   font-size: 14px;
 }
+
 .toast-close {
-  float: right;
+  font-size: 18px;
   font-weight: bold;
-  color: #999;
+  color: #999999;
   cursor: pointer;
-  margin-left: 10px;
-}
-.toast-close:hover {
-  color: #333;
+  margin-left: 15px;
+  transition: color 0.3s;
 }
 
-/* Live search */
+.toast-close:hover {
+  color: var(--text-color);
+}
+
+/* LIVE SEARCH */
 .live-search-container {
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 }
+
 #live-search-input {
-  padding: 8px;
+  padding: 10px;
   border: 1px solid #ccc;
-  border-radius: 4px;
-  width: 300px;
+  border-radius: 5px;
+  width: 320px;
+  font-size: 14px;
+  transition: border-color 0.3s;
 }
+
+#live-search-input:focus {
+  border-color: var(--link-color);
+  outline: none;
+}
+
 #live-results ul {
   list-style: none;
-  padding: 0;
+  padding: 10px 0;
   margin: 10px 0 0 0;
-}
-#live-results li {
-  padding: 5px 0;
-  border-bottom: 1px solid #ddd;
+  background: var(--subtask-bg);
+  border: 1px solid #ddd;
+  border-radius: 5px;
 }
 
-/* Dark mode */
-.dark-mode {
-  background-color: #1e1e1e;
-  color: #eee;
+#live-results li {
+  padding: 8px 15px;
+  border-bottom: 1px solid #ddd;
+  color: var(--text-color);
+  transition: background-color 0.3s, color 0.3s;
 }
+
+#live-results li:hover {
+  background-color: var(--background-color);
+  color: var(--link-hover-color);
+}
+
+#live-results li:last-child {
+  border-bottom: none;
+}
+
+/* DARK MODE SPECIFIKACE */
 .dark-mode .container {
-  background-color: #2a2a2a;
-  color: #eee;
+  background-color: var(--container-bg);
+  color: var(--text-color);
 }
+
+.dark-mode .table-tasks thead {
+  background-color: var(--table-header-bg);
+}
+
 .dark-mode .table-tasks td,
 .dark-mode .table-tasks th {
-  background-color: #333;
-  color: #eee;
-}
-.dark-mode .tab-content {
   background-color: #2a2a2a;
+  color: var(--text-color);
 }
+
+.dark-mode .tab-content {
+  background-color: var(--container-bg);
+}
+
 .dark-mode a {
-  color: #9acfff;
+  color: var(--link-color);
 }
+
 .dark-mode .button {
-  background-color: #666;
-  color: #eee;
+  background-color: var(--button-bg);
+  color: var(--button-text);
+}
+
+.dark-mode .complete {
+  background-color: var(--complete-bg);
+  color: var(--button-text);
+}
+
+.dark-mode .delete {
+  background-color: var(--delete-bg);
+  color: var(--button-text);
+}
+
+.dark-mode .neutral {
+  background-color: var(--neutral-bg);
+  color: var(--button-text);
+}
+
+.dark-mode .detail {
+  background-color: var(--detail-bg);
+  color: var(--button-text);
+}
+
+.dark-mode .edit {
+  background-color: var(--edit-bg);
+  color: #ffffff; /* Upravená barva textu pro lepší kontrast */
+}
+
+.dark-mode .subtask-list {
+  background-color: var(--subtask-bg);
+  color: var(--subtask-text);
+}
+
+.dark-mode .toast {
+  background-color: var(--toast-bg);
+  color: var(--toast-text);
+  border-left: 5px solid var(--toast-border);
+}
+
+.dark-mode .toast p {
+  color: var(--toast-text);
+}
+
+.dark-mode .toast-close {
+  color: #bbbbbb;
+}
+
+.dark-mode .toast-close:hover {
+  color: var(--text-color);
 }

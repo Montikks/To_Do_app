@@ -1,5 +1,4 @@
 {% extends 'tasks/base.html' %}
-
 {% block title %}Nedokončené úkoly{% endblock %}
 
 {% block content %}
@@ -7,12 +6,12 @@
 <ul>
     {% for task in tasks %}
         <li>
-            <a href="{% url 'task_detail' task.id %}">{{ task.name }}</a>
-            <a href="{% url 'complete_task' task.id %}">Označit jako hotové</a>
+            <a href="{% url 'task_detail' task.id %}" class="button detail">{{ task.name }}</a>
+            <a href="{% url 'complete_task' task.id %}" class="button complete">Označit jako hotové</a>
         </li>
     {% empty %}
         <p>Žádné nedokončené úkoly.</p>
     {% endfor %}
 </ul>
-<a href="{% url 'task_list' %}">Zpět na seznam úkolů</a>
+<a href="{% url 'task_list' %}" class="button detail">Zpět na seznam úkolů</a>
 {% endblock %}
