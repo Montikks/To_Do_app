@@ -99,10 +99,11 @@ Definice modelů pro uživatele, úkoly a podúkoly s odpovídajícími vztahy.
 *   Specifické třídy pro různé typy tlačítek (Detail, Edit, Complete) s odpovídajícími styly.
     
 
-ER Diagram
-----------
+## ER Diagram
 
-_Poznámka: Vygenerujte ER diagram a nahraďte cestu k obrázku._
+Níže je vizualizace vztahů v databázi aplikace:
+
+![ER Diagram](docs/er_diagram.png)
 
 Autentizace a Autorizace
 ------------------------
