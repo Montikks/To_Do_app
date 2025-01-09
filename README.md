@@ -160,7 +160,7 @@ pip install -r requirements.txt
 
 
 ```bash
-Zkopírovat kódpython manage.py migrate
+python manage.py migrate
 ```
 
 ### Vytvoření Superuživatele
@@ -240,17 +240,6 @@ GIT Repozitář
 git commit -m "Přidání funkce přepínání Dark Mode"
  ```   
 
-### .gitignore
-
-Soubor .gitignore obsahuje všechny nepotřebné soubory a složky, které by neměly být sledovány Git repozitářem, např.:
-
-```bash
-arduinoZkopírovat kódvenv/
-__pycache__/
-*.pyc
-db.sqlite3
-/static/
-```
 ### README
 
 Tento soubor README.md slouží jako úvodní stránka repozitáře, poskytuje přehled o projektu, jeho funkcích, instalaci a použití.
