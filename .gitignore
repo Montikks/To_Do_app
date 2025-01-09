@@ -1,48 +1,29 @@
-# Python
-*.pyc
-__pycache__/
-*.pyo
-*.pyd
-*$py.class
-
 # Virtual Environment
 venv/
-ENV/
-env/
-env.bak/
-venv.bak/
 
-# Django
-*.log
-*.pot
-local_settings.py
+# Python Cache
+__pycache__/
+*.pyc
+
+# Database
 db.sqlite3
-db.sqlite3-journal
 
-# Static files
-/staticfiles/
-# Pokud používáte jiný název složky pro statické soubory, upravte podle potřeby
-/static/
+# Collected Static Files
+staticfiles/
 
-# Media files
-/media/
-
-# Editor a IDE specifické
+# Editor and IDE Specific
 .vscode/
 .idea/
 
-# MacOS
+# OS Specific Files
 .DS_Store
-
-# Windows
 Thumbs.db
-ehthumbs.db
-Desktop.ini
 
-# Další
-*.swp
-*.swo
-*.swn
-*.bak
+# Logs
+*.log
+
+# Temporary Files
 *.tmp
 *.temp
+*.bak
+.iml
