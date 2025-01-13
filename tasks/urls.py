@@ -14,6 +14,8 @@ urlpatterns = [
     path('task/<int:task_id>/complete/', views.complete_task, name='complete_task'),
     path('task/<int:task_id>/delete/', views.delete_task, name='delete_task'),
     path('task/<int:task_id>/edit/', views.edit_task, name='edit_task'),
+    path('templates/', views.template_list, name='template_lis'),
+    path('templates/create/',views.create_template, name='create_template'),
 
     # Auth
     path('login/', auth_views.login_view, name='login'),

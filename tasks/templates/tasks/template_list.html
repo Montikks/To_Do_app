@@ -1,0 +1,15 @@
+{% extends 'tasks/base.html' %}
+
+{% block content %}
+<h2>Šablony úkolů</h2>
+
+<a href="{% url 'create_template' %}" class="button neutral">+ Přidat šablonu</a>
+
+<ul>
+    {% for template in  templates %}
+        <li>{{ template.name }} - {{ template.repeat_interval }}</li>
+    {% empty %}
+        <li>Žádné šablony nejsou k dispozici.</li>
+    {% endfor %}
+</ul>
+{% endblock %}
