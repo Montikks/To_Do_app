@@ -6,6 +6,7 @@ from datetime import timedelta
 
 from tasks.models import Task
 
+
 class DashboardViewTest(TestCase):
     def setUp(self):
         self.client = Client()

@@ -3,13 +3,16 @@ from django.utils.timezone import now
 from datetime import timedelta
 from django.core.exceptions import ValidationError
 
+
 def validate_notification_time(value):
     if value < 1 or value > 72:
         raise ValidationError("Notifikační čas musí být mezi 1 a 72 hodinami.")
 
+
 def validate_deadline(value):
     if value < now():
         raise ValidationError("Termín musí být v budoucnosti.")
+
 
 class Task(models.Model):
     name = models.CharField(max_length=200)
@@ -52,6 +55,7 @@ class Task(models.Model):
         current_time = now()
         notification_threshold = self.deadline - timedelta(hours=self.notification_time)
         return notification_threshold <= current_time <= self.deadline
+
 
 class Subtask(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='subtasks')

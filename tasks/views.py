@@ -9,6 +9,7 @@ from datetime import timedelta
 from .models import Task, Subtask
 from .forms import TaskForm, SubtaskForm
 
+
 @login_required
 def dashboard_view(request):
     filter_status = request.GET.get('status', '')
@@ -108,7 +109,6 @@ def ajax_search(request):
             'completion_percentage': t.completion_percentage(),
         })
     return JsonResponse({'tasks': results})
-
 
 
 @login_required
