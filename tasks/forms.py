@@ -1,7 +1,8 @@
 from django import forms
-from .models import Task, Subtask, Template
+from .models import Task, Subtask, Template, SubtaskTemplate
 
 
+# Formulář pro šablonu úkolu
 class TemplateForm(forms.ModelForm):
     class Meta:
         model = Template
@@ -12,9 +13,18 @@ class TemplateForm(forms.ModelForm):
             'repeat_interval': forms.Select(attrs={'class': 'form-control'}),
         }
 
-    pass
+
+# Formulář pro podúkoly šablony
+class SubtaskTemplateForm(forms.ModelForm):
+    class Meta:
+        model = SubtaskTemplate
+        fields = ['name']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Název podúkolu'}),
+        }
 
 
+# Formulář pro běžný úkol
 class TaskForm(forms.ModelForm):
     deadline = forms.DateTimeField(
         widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}),
@@ -23,7 +33,7 @@ class TaskForm(forms.ModelForm):
     )
     notification_time = forms.IntegerField(
         min_value=1,
-        max_value=72,  # ladí s validate_notification_time
+        max_value=72,
         initial=24,
         label="Notifikace (hodiny před termínem)",
         help_text="Kolik hodin před termínem má být odeslána notifikace."
@@ -34,7 +44,11 @@ class TaskForm(forms.ModelForm):
         fields = ['name', 'description', 'completed', 'deadline', 'notification_time']
 
 
+# Formulář pro běžný podúkol
 class SubtaskForm(forms.ModelForm):
     class Meta:
         model = Subtask
         fields = ['name']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Název podúkolu'}),
+        }

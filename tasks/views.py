@@ -6,28 +6,92 @@ from django.core.mail import send_mail
 from django.utils import timezone
 from datetime import timedelta
 
-from .models import Task, Subtask, Template
-from .forms import TaskForm, SubtaskForm, TemplateForm
+from .models import Task, Subtask, Template, SubtaskTemplate
+from .forms import TaskForm, SubtaskForm, TemplateForm, SubtaskTemplateForm
 
 
-# Seznam všech šablon
+# 📝 Seznam všech šablon
 @login_required
 def template_list(request):
     templates = Template.objects.all()
     return render(request, 'tasks/template_list.html', {'templates': templates})
 
 
-# Vytvoření nové šablony
+# ➕ Vytvoření nové šablony (včetně podúkolů)
 @login_required
 def create_template(request):
     if request.method == 'POST':
         form = TemplateForm(request.POST)
         if form.is_valid():
-            form.save()
+            template = form.save(commit=False)
+            template.created_by = request.user
+            template.save()
             return redirect('template_list')
     else:
         form = TemplateForm()
-    return render(request, 'task/create_template.html', {'form': form})
+    return render(request, 'tasks/create_template.html', {'form': form})
+
+
+# ➕ Přidání podúkolu k šabloně
+@login_required
+def add_subtask_to_template(request, template_id):
+    template = get_object_or_404(Template, id=template_id)
+    if request.method == 'POST':
+        form = SubtaskTemplateForm(request.POST)
+        if form.is_valid():
+            subtask = form.save(commit=False)
+            subtask.template = template
+            subtask.save()
+            return redirect('template_detail', template_id=template.id)
+    else:
+        form = SubtaskTemplateForm()
+    return render(request, 'tasks/add_subtask_to_template.html', {'form': form, 'template': template})
+
+
+# ✏️ Úprava šablony
+@login_required
+def edit_template(request, template_id):
+    template = get_object_or_404(Template, id=template_id)
+    if request.method == 'POST':
+        form = TemplateForm(request.POST, instance=template)
+        if form.is_valid():
+            form.save()
+            return redirect('template_list')
+    else:
+        form = TemplateForm(instance=template)
+    return render(request, 'tasks/edit_template.html', {'form': form, 'template': template})
+
+
+# ❌ Smazání šablony
+@login_required
+def delete_template(request, template_id):
+    template = get_object_or_404(Template, id=template_id)
+    if request.method == 'POST':
+        template.delete()
+        return redirect('template_list')
+    return render(request, 'tasks/delete_template.html', {'template': template})
+
+
+# 🔄 Generování úkolu ze šablony
+@login_required
+def generate_task_from_template(request, template_id):
+    template = get_object_or_404(Template, id=template_id)
+
+    # Vytvoření hlavního úkolu
+    task = Task.objects.create(
+        name=template.name,
+        description=template.description,
+        created_by=request.user
+    )
+
+    # Přenesení podúkolů
+    for subtask_template in template.subtask_templates.all():
+        Subtask.objects.create(
+            task=task,
+            name=subtask_template.name
+        )
+
+    return redirect('task_list')
 
 
 @login_required
