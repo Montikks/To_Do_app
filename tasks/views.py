@@ -6,8 +6,28 @@ from django.core.mail import send_mail
 from django.utils import timezone
 from datetime import timedelta
 
-from .models import Task, Subtask
-from .forms import TaskForm, SubtaskForm
+from .models import Task, Subtask, Template
+from .forms import TaskForm, SubtaskForm, TemplateForm
+
+
+# Seznam všech šablon
+@login_required
+def template_list(request):
+    templates = Template.objects.all()
+    return render(request, 'tasks/template_list.html', {'templates': templates})
+
+
+# Vytvoření nové šablony
+@login_required
+def create_template(request):
+    if request.method == 'POST':
+        form = TemplateForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('template_list')
+    else:
+        form = TemplateForm()
+    return render(request, 'task/create_template.html', {'form': form})
 
 
 @login_required

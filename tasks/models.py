@@ -2,6 +2,28 @@ from django.db import models
 from django.utils.timezone import now
 from datetime import timedelta
 from django.core.exceptions import ValidationError
+from django.contrib.auth.models import User
+
+
+class Template(models.Model):
+    name = models.CharField(max_length=255, verbose_name="Název šablony")
+    description = models.TextField(blank=True, verbose_name="Popis šablony")
+    repeat_interval = models.CharField(
+        max_length=20,
+        choices=[
+            ('none', 'Neopakovat'),
+            ('daily', 'Denně'),
+            ('weekly', 'Měsíčně')
+        ],
+        default='none',
+        verbose_name="Interval opakování"
+    )
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Vytvořil")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Vytvořeno")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Aktualizováno")
+
+    def __str__(self):
+        return self.name
 
 
 def validate_notification_time(value):

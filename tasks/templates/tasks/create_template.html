@@ -1,0 +1,13 @@
+{% extends 'tasks/base.html' %}
+
+{% block content %}
+<h2>Vytvořit novou šablonu</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="button neutral">Uložit šablonu</button>
+</form>
+
+<a href="{% url 'template_list %" class="button">Zpět na seznam šablon</a>
+{% endblock %}

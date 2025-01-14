@@ -1,6 +1,18 @@
-# tasks/forms.py
 from django import forms
-from .models import Task, Subtask
+from .models import Task, Subtask, Template
+
+
+class TemplateForm(forms.ModelForm):
+    class Meta:
+        model = Template
+        fields = ['name', 'description', 'repeat_interval']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Název šablony'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Popis šablony'}),
+            'repeat_interval': forms.Select(attrs={'class': 'form-control'}),
+        }
+
+    pass
 
 
 class TaskForm(forms.ModelForm):
