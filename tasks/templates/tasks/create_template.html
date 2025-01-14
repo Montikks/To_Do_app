@@ -1,13 +1,37 @@
 {% extends 'tasks/base.html' %}
 
+{% block title %}Vytvořit šablonu{% endblock %}
+
 {% block content %}
 <h2>Vytvořit novou šablonu</h2>
 
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit" class="button neutral">Uložit šablonu</button>
+
+    <h3>Podúkoly</h3>
+    {{ formset.management_form }}
+    <div id="subtasks">
+        {% for form in formset %}
+            <div class="subtask-form">
+                {{ form.as_p }}
+            </div>
+        {% endfor %}
+    </div>
+
+    <button type="button" id="add-subtask">➕ Přidat podúkol</button>
+    <button type="submit" class="button complete">Uložit šablonu</button>
 </form>
 
-<a href="{% url 'template_list %" class="button">Zpět na seznam šablon</a>
+<script>
+    document.getElementById('add-subtask').addEventListener('click', function () {
+        var formCount = document.getElementById('id_subtasktemplate_set-TOTAL_FORMS');
+        var newForm = document.querySelectorAll('.subtask-form')[0].cloneNode(true);
+        var formRegex = new RegExp(`subtasktemplate_set-(\\d){1}-`, 'g');
+        newForm.innerHTML = newForm.innerHTML.replace(formRegex, `subtasktemplate_set-${formCount.value}-`);
+        document.getElementById('subtasks').appendChild(newForm);
+        formCount.value++;
+    });
+</script>
+
 {% endblock %}

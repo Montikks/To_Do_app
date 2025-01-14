@@ -23,6 +23,11 @@ urlpatterns = [
     path('templates/<int:template_id>/edit/', views.edit_template, name='edit_template'),
     path('templates/<int:template_id>/delete/', views.delete_template, name='delete_template'),
     path('templates/<int:template_id>/generate_task/', views.generate_task_from_template, name='generate_task_from_template'),
+    # Detail šablony
+    path('templates/<int:template_id>/', views.template_detail, name='template_detail'),
+    path('templates/subtask/<int:subtask_id>/delete/', views.delete_subtask_template, name='delete_subtask_template'),
+    # URL pro detail podúkolu v šabloně
+    path('templates/<int:template_id>/subtask/<int:subtask_id>/', views.subtask_template_detail, name='subtask_template_detail'),
 
     # Autentizace
     path('login/', auth_views.login_view, name='login'),

@@ -1,0 +1,14 @@
+{% extends 'tasks/base.html' %}
+
+{% block content %}
+<h2>⚠️ Opravdu chcete smazat tuto šablonu?</h2>
+
+<p><strong>Název šablony:</strong> {{ template.name }}</p>
+<p><strong>Popis:</strong> {{ template.description }}</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="button danger">🗑️ Ano, smazat</button>
+    <a href="{% url 'template_detail' template.id %}" class="button neutral">❌ Zrušit</a>
+</form>
+{% endblock %}

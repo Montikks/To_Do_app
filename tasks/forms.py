@@ -13,12 +13,27 @@ class TemplateForm(forms.ModelForm):
             'repeat_interval': forms.Select(attrs={'class': 'form-control'}),
         }
 
+    def clean_name(self):
+        name = self.cleaned_data.get('name')
+        if Template.objects.filter(name=name).exists():
+            raise forms.ValidationError("Šablona s tímto názvem již existuje.")
+        return name
+
 
 # Formulář pro podúkoly šablony
 class SubtaskTemplateForm(forms.ModelForm):
     class Meta:
         model = SubtaskTemplate
-        fields = ['name']
+        fields = ['name', 'description']  # ✅ Přidán popis
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Název podúkolu'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Popis podúkolu', 'rows': 3}),  # ✅ Popis
+        }
+
+
+    class Meta:
+        model = SubtaskTemplate
+        fields = ['name', 'description']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Název podúkolu'}),
         }

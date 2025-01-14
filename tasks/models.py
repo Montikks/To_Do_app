@@ -3,16 +3,18 @@ from django.utils.timezone import now
 from datetime import timedelta
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 
 # Podúkoly šablony
 class SubtaskTemplate(models.Model):
-    template = models.ForeignKey('Template', related_name='subtasks', on_delete=models.CASCADE,
-                                 verbose_name="Šablona úkolu")
+    template = models.ForeignKey('Template', related_name='subtasks', on_delete=models.CASCADE, verbose_name="Šablona úkolu")
     name = models.CharField(max_length=255, verbose_name="Název podúkolu")
+    description = models.TextField(blank=True, verbose_name="Popis podúkolu")  # ✅ Přidán popis
 
     def __str__(self):
         return self.name
+
 
 
 # Šablona úkolu
@@ -41,18 +43,21 @@ class Template(models.Model):
 
     # 🏗️ Metoda na generování úkolu ze šablony
     def generate_task(self):
-        from tasks.models import Task, Subtask  # Import modelů, kde máš úkoly
+        from tasks.models import Task, Subtask
 
-        # Vytvoření hlavního úkolu
+        # Kontrola, zda úkol už nebyl vygenerován
+        existing_task = Task.objects.filter(name=self.name, user=self.created_by).first()
+        if existing_task:
+            return existing_task
+
         new_task = Task.objects.create(
             name=self.name,
             description=self.description,
             deadline=self.calculate_next_deadline(),
             completed=False,
-            created_by=self.created_by
+            user=self.created_by
         )
 
-        # Vytvoření podúkolů podle šablony
         for subtask_template in self.subtasks.all():
             Subtask.objects.create(
                 task=new_task,

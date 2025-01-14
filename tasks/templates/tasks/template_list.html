@@ -6,8 +6,12 @@
 <a href="{% url 'create_template' %}" class="button neutral">+ Přidat šablonu</a>
 
 <ul>
-    {% for template in  templates %}
-        <li>{{ template.name }} - {{ template.repeat_interval }}</li>
+    {% for template in templates %}
+        <li>
+            <a href="{% url 'template_detail' template.id %}">
+                {{ template.name }} - {{ template.repeat_interval }}
+            </a>
+        </li>
     {% empty %}
         <li>Žádné šablony nejsou k dispozici.</li>
     {% endfor %}
