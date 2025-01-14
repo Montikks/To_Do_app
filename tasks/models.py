@@ -3,27 +3,79 @@ from django.utils.timezone import now
 from datetime import timedelta
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 
+# Podúkoly šablony
+class SubtaskTemplate(models.Model):
+    template = models.ForeignKey('Template', related_name='subtasks', on_delete=models.CASCADE, verbose_name="Šablona úkolu")
+    name = models.CharField(max_length=255, verbose_name="Název podúkolu")
+    description = models.TextField(blank=True, verbose_name="Popis podúkolu")  # ✅ Přidán popis
+
+    def __str__(self):
+        return self.name
+
+
+
+# Šablona úkolu
 class Template(models.Model):
     name = models.CharField(max_length=255, verbose_name="Název šablony")
     description = models.TextField(blank=True, verbose_name="Popis šablony")
+
     repeat_interval = models.CharField(
         max_length=20,
         choices=[
             ('none', 'Neopakovat'),
             ('daily', 'Denně'),
-            ('weekly', 'Měsíčně')
+            ('weekly', 'Týdně'),
+            ('monthly', 'Měsíčně')
         ],
         default='none',
         verbose_name="Interval opakování"
     )
+
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Vytvořil")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Vytvořeno")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Aktualizováno")
 
     def __str__(self):
         return self.name
+
+    # 🏗️ Metoda na generování úkolu ze šablony
+    def generate_task(self):
+        from tasks.models import Task, Subtask
+
+        # Kontrola, zda úkol už nebyl vygenerován
+        existing_task = Task.objects.filter(name=self.name, user=self.created_by).first()
+        if existing_task:
+            return existing_task
+
+        new_task = Task.objects.create(
+            name=self.name,
+            description=self.description,
+            deadline=self.calculate_next_deadline(),
+            completed=False,
+            user=self.created_by
+        )
+
+        for subtask_template in self.subtasks.all():
+            Subtask.objects.create(
+                task=new_task,
+                name=subtask_template.name,
+                completed=False
+            )
+
+        return new_task
+
+    # 📅 Výpočet dalšího termínu podle opakování
+    def calculate_next_deadline(self):
+        if self.repeat_interval == 'daily':
+            return timezone.now() + timedelta(days=1)
+        elif self.repeat_interval == 'weekly':
+            return timezone.now() + timedelta(weeks=1)
+        elif self.repeat_interval == 'monthly':
+            return timezone.now() + timedelta(days=30)
+        return None
 
 
 def validate_notification_time(value):

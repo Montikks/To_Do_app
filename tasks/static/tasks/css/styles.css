@@ -536,3 +536,16 @@ form textarea {
 .dark-mode .toast-close:hover {
   color: var(--text-color);
 }
+.button.neutral {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 10px;
+    display: inline-block;
+}
+
+.button.neutral:hover {
+    background-color: #45a049;
+}

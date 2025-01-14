@@ -1,0 +1,15 @@
+{% extends 'tasks/base.html' %}
+
+{% block title %}Přidat podúkol{% endblock %}
+
+{% block content %}
+<h2>Přidat podúkol k šabloně: {{ template.name }}</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="button complete">Přidat podúkol</button>
+</form>
+
+<a href="{% url 'template_detail' template.id %}" class="button detail">Zpět na šablonu</a>
+{% endblock %}

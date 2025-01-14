@@ -6,28 +6,138 @@ from django.core.mail import send_mail
 from django.utils import timezone
 from datetime import timedelta
 
-from .models import Task, Subtask, Template
-from .forms import TaskForm, SubtaskForm, TemplateForm
+from .models import Task, Subtask, Template, SubtaskTemplate
+from .forms import TaskForm, SubtaskForm, TemplateForm, SubtaskTemplateForm
+from django.forms import inlineformset_factory
 
 
-# Seznam všech šablon
+# Detail šablony
+# views.py
+@login_required
+def template_detail(request, template_id):
+    template = get_object_or_404(Template, id=template_id)
+    subtasks = SubtaskTemplate.objects.filter(template=template)
+    return render(request, 'tasks/template_detail.html', {
+        'template': template,
+        'subtasks': subtasks
+    })
+
+
+@login_required
+def subtask_template_detail(request, template_id, subtask_id):
+    template = get_object_or_404(Template, id=template_id)
+    subtask = get_object_or_404(SubtaskTemplate, id=subtask_id, template=template)
+
+    return render(request, 'tasks/subtask_template_detail.html', {
+        'template': template,
+        'subtask': subtask
+    })
+
+
+@login_required
+def delete_subtask_template(request, subtask_id):
+    subtask = get_object_or_404(SubtaskTemplate, id=subtask_id)
+    template_id = subtask.template.id  # Získání ID šablony
+    subtask.delete()
+    return redirect('template_detail', template_id=template_id)
+
+
+# Přidání podúkolu k šabloně
+@login_required
+def add_subtask_to_template(request, template_id):
+    template = get_object_or_404(Template, id=template_id)
+    if request.method == 'POST':
+        form = SubtaskTemplateForm(request.POST)
+        if form.is_valid():
+            subtask = form.save(commit=False)
+            subtask.template = template  # 🛠️ Správné propojení se šablonou
+            subtask.save()
+            return redirect('template_detail', template_id=template.id)
+    else:
+        form = SubtaskTemplateForm()
+    return render(request, 'tasks/add_subtask_to_template.html', {'form': form, 'template': template})
+
+
+# 📝 Seznam všech šablon
 @login_required
 def template_list(request):
     templates = Template.objects.all()
     return render(request, 'tasks/template_list.html', {'templates': templates})
 
 
-# Vytvoření nové šablony
+# ➕ Vytvoření nové šablony (včetně podúkolů)
 @login_required
 def create_template(request):
+    SubtaskTemplateFormSet = inlineformset_factory(
+        Template, SubtaskTemplate, form=SubtaskTemplateForm, extra=1, can_delete=True
+    )
+
     if request.method == 'POST':
         form = TemplateForm(request.POST)
+        formset = SubtaskTemplateFormSet(request.POST)
+
+        if form.is_valid() and formset.is_valid():
+            template = form.save(commit=False)
+            template.created_by = request.user
+            template.save()
+
+            formset.instance = template
+            formset.save()
+
+            return redirect('template_list')
+    else:
+        form = TemplateForm()
+        formset = SubtaskTemplateFormSet()
+
+    return render(request, 'tasks/create_template.html', {'form': form, 'formset': formset})
+
+
+# ✏️ Úprava šablony
+@login_required
+def edit_template(request, template_id):
+    template = get_object_or_404(Template, id=template_id)
+    if request.method == 'POST':
+        form = TemplateForm(request.POST, instance=template)
         if form.is_valid():
             form.save()
             return redirect('template_list')
     else:
-        form = TemplateForm()
-    return render(request, 'task/create_template.html', {'form': form})
+        form = TemplateForm(instance=template)
+    return render(request, 'tasks/edit_template.html', {'form': form, 'template': template})
+
+
+# ❌ Smazání šablony s potvrzením
+@login_required
+def delete_template(request, template_id):
+    template = get_object_or_404(Template, id=template_id)
+    if request.method == 'POST':
+        template.delete()
+        return redirect('template_list')  # Po smazání návrat na seznam šablon
+    return render(request, 'tasks/delete_template_confirm.html', {'template': template})
+
+
+# 🔄 Generování úkolu ze šablony
+@login_required
+def generate_task_from_template(request, template_id):
+    template = get_object_or_404(Template, id=template_id)
+
+    # Vytvoření hlavního úkolu
+    task = Task.objects.create(
+        name=template.name,
+        description=template.description,
+        user=request.user,
+        completed=False
+    )
+
+    # Přenesení podúkolů ze šablony
+    for subtask_template in template.subtasks.all():
+        Subtask.objects.create(
+            task=task,
+            name=subtask_template.name,
+            completed=False
+        )
+
+    return redirect('dashboard')
 
 
 @login_required
@@ -132,27 +242,27 @@ def ajax_search(request):
 
 
 @login_required
+def add_subtask(request, task_id):
+    task = get_object_or_404(Task, id=task_id, user=request.user)
+    if request.method == 'POST':
+        form = SubtaskForm(request.POST)
+        if form.is_valid():
+            subtask = form.save(commit=False)
+            subtask.task = task
+            subtask.save()
+            return redirect('task_detail', task_id=task.id)
+    else:
+        form = SubtaskForm()
+    return render(request, 'tasks/add_subtask.html', {'task': task, 'form': form})
+
+
+@login_required
 def task_detail(request, task_id):
     task = get_object_or_404(Task, id=task_id, user=request.user)
     return render(request, 'tasks/task_detail.html', {
         'task': task,
         'subtasks': task.subtasks.all(),
     })
-
-
-@login_required
-def add_subtask(request, task_id):
-    task = get_object_or_404(Task, id=task_id, user=request.user)
-    if request.method == 'POST':
-        form = SubtaskForm(request.POST)
-        if form.is_valid():
-            sub = form.save(commit=False)
-            sub.task = task
-            sub.save()
-            return redirect('task_detail', task_id=task.id)
-    else:
-        form = SubtaskForm()
-    return render(request, 'tasks/add_subtask.html', {'task': task, 'form': form})
 
 
 @login_required

@@ -1,0 +1,40 @@
+{% extends 'tasks/base.html' %}
+
+{% block content %}
+<h2>Detail šablony: {{ template.name }}</h2>
+
+<p><strong>Popis šablony:</strong> {{ template.description }}</p>
+<p><strong>Opakování:</strong> {{ template.get_repeat_interval_display }}</p>
+
+<h3>Podúkoly</h3>
+
+{% if subtasks %}
+    <ul>
+        {% for subtask in subtasks %}
+            <li>
+                <!-- 🔗 Klikací odkaz na detail podúkolu -->
+                <a href="{% url 'subtask_template_detail' template.id subtask.id %}">
+                    <strong>{{ subtask.name }}</strong>
+                </a>
+                <br>
+                <em>{{ subtask.description }}</em>
+
+                <!-- 🗑️ Tlačítko pro smazání podúkolu -->
+                <form action="{% url 'delete_subtask_template' subtask.id %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="button danger">🗑️ Smazat</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Žádné podúkoly nejsou přiřazeny.</p>
+{% endif %}
+
+<a href="{% url 'add_subtask_to_template' template.id %}" class="button neutral">➕ Přidat podúkol</a>
+<a href="{% url 'template_list' %}" class="button neutral">⬅️ Zpět na seznam šablon</a>
+<a href="{% url 'delete_template' template.id %}" class="button danger">🗑️ Smazat šablonu</a>
+<a href="{% url 'generate_task_from_template' template.id %}" class="button complete">✅ Vygenerovat úkol</a>
+
+
+{% endblock %}
